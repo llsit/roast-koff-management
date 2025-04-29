@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'features/auth/presentation/screen/login_screen.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await dotenv.load(fileName: ".env.web");
+  } else if (Platform.isAndroid) {
+    await dotenv.load(fileName: ".env.android");
+  } else if (Platform.isIOS) {
+    await dotenv.load(fileName: ".env.ios");
+  } else if (Platform.isMacOS) {
+    await dotenv.load(fileName: ".env.macos");
+  } else if (Platform.isWindows) {
+    await dotenv.load(fileName: ".env.windows");
+  } else {
+
+  } 
+  await dotenv.load();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Roast Koff Management',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: LoginScreen(),
+    );
+  }
+}
