@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'features/auth/data/repository/auth_repository_impl.dart';
+import 'features/auth/domain/usecase/login_usecase.dart';
+import 'features/auth/presentation/screen/login_viewmodel.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screen/login_screen.dart';
 import 'dart:io' show Platform;
@@ -18,15 +23,20 @@ void main() async {
     await dotenv.load(fileName: ".env.macos");
   } else if (Platform.isWindows) {
     await dotenv.load(fileName: ".env.windows");
-  } else {
+  } else {}
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  } 
-  await dotenv.load();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  final authRepository = AuthRepositoryImpl(FirebaseAuth.instance);
+  final loginUseCase = LoginUseCase(authRepository);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel(loginUseCase)),
+      ],
+      child: const MyApp(),
+    ),
   );
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

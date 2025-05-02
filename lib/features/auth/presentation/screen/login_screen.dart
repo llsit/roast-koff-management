@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'login_viewmodel.dart';
+import 'login_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
-  // final LoginViewModel viewModel = LoginViewModel();
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -11,6 +10,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<LoginViewModel>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF6C63FF),
       body: Center(
@@ -55,22 +55,37 @@ class LoginScreen extends StatelessWidget {
                           suffixIcon: Icon(Icons.visibility_off),
                         ),
                       ),
-                      const SizedBox(height: 8),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         height: 48,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF6C63FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text('Log in'),
-                        ),
+                        child:
+                            viewModel.isLoading
+                                ? const CircularProgressIndicator()
+                                : ElevatedButton(
+                                  onPressed: () {
+                                    viewModel.login(
+                                      emailController.text,
+                                      passwordController.text,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF6C63FF),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Log in',
+                                    style: TextStyle(color: Color(0xFFFFFFFF)),
+                                  ),
+                                ),
                       ),
+                      if (viewModel.error != null)
+                        Text(
+                          viewModel.error!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
                     ],
                   ),
                 ),
@@ -79,10 +94,7 @@ class LoginScreen extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Image.asset(
-                    'assets/login_illustration.png', // เปลี่ยนตามภาพของคุณ
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image.asset('/images/cat_icon.png'),
                 ),
               ),
             ],

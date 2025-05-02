@@ -49,6 +49,6 @@ android/app/google-services.json
 #.env
 .env.android
 .env.ios
-.env.web
+assets/.env.web
 .env.macos
 .env.windows
