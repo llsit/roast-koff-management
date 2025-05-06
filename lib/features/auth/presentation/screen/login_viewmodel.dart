@@ -8,6 +8,7 @@ class LoginViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? error;
   UserEntity? user;
+  bool isLoginSuccess = false;
 
   LoginViewModel(this.loginUseCase);
 
@@ -16,11 +17,17 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      print("email: ${email.toString()}");
+      print("password: ${password.toString()}");
       user = await loginUseCase(email, password);
       if (user == null) {
         error = "Login failed";
+      } else {
+        isLoginSuccess = true;
       }
     } catch (e) {
+      print("error: ${e.toString()}");
+      debugPrint("error: ${e.toString()}");
       error = e.toString();
     } finally {
       isLoading = false;

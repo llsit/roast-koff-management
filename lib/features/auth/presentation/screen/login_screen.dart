@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
-import 'login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'login_viewmodel.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  LoginScreen({super.key});
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<LoginViewModel>(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (viewModel.isLoginSuccess) {
+        Navigator.pushNamed(context, '/home');
+      }
+    });
     return Scaffold(
       backgroundColor: const Color(0xFF6C63FF),
       body: Center(
@@ -40,14 +58,16 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const TextField(
+                      TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           labelText: 'Your Email',
                           border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const TextField(
+                      TextField(
+                        controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -61,7 +81,9 @@ class LoginScreen extends StatelessWidget {
                         height: 48,
                         child:
                             viewModel.isLoading
-                                ? const CircularProgressIndicator()
+                                ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
                                 : ElevatedButton(
                                   onPressed: () {
                                     viewModel.login(
