@@ -50,12 +50,32 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: '/',
       routes: {
-        '/login' : (context) => LoginScreen(),
-        '/home' : (context) => const HomeScreen(),
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => const HomeScreen(),
       },
-      home: LoginScreen(),
+      home: AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (user != null) {
+        Navigator.pushNamed(context, '/home');
+      } else {
+        Navigator.pushNamed(context, '/login');
+      }
+    });
+
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }
