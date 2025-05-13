@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:roast_koff_management/features/dashboard/presentation/dashboard_screen.dart';
 
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/side_menu_widget.dart';
+import '../../../stock/presentation/screen/stock_screen.dart';
 import 'menu_provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -20,27 +22,37 @@ class HomeScreen extends StatelessWidget {
           Expanded(child: _getPage(selectedIndex)),
         ],
       ),
-      bottomNavigationBar: !isDesktop
-          ? BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (index) =>
-            context.read<MenuProvider>().selectIndex(index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.looks_one), label: "หน้าแรก"),
-          BottomNavigationBarItem(icon: Icon(Icons.looks_two), label: "เช็คสต๊อก"),
-          BottomNavigationBarItem(icon: Icon(Icons.looks_3), label: "บุคคล"),
-        ],
-      )
-          : null,
+      bottomNavigationBar:
+          !isDesktop
+              ? BottomNavigationBar(
+                currentIndex: selectedIndex,
+                onTap:
+                    (index) => context.read<MenuProvider>().selectIndex(index),
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.looks_one),
+                    label: "หน้าแรก",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.looks_two),
+                    label: "เช็คสต๊อก",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.looks_3),
+                    label: "บุคคล",
+                  ),
+                ],
+              )
+              : null,
     );
   }
 
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return const Center(child: Text("Page 1"));
+        return const Center(child: DashboardScreen());
       case 1:
-        return const Center(child: Text("Page 2"));
+        return const Center(child: StockScreen());
       case 2:
         return const Center(child: Text("Page 3"));
       default:
