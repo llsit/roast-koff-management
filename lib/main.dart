@@ -7,6 +7,7 @@ import 'package:roast_koff_management/features/home/presentation/screen/home_scr
 import 'features/auth/data/repository/auth_repository_impl.dart';
 import 'features/auth/domain/usecase/login_usecase.dart';
 import 'features/auth/presentation/screen/login_viewmodel.dart';
+import 'features/home/presentation/screen/menu_provider.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screen/login_screen.dart';
 import 'dart:io' show Platform;
@@ -34,6 +35,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel(loginUseCase)),
+        ChangeNotifierProvider(create: (_) => MenuProvider())
       ],
       child: const MyApp(),
     ),
