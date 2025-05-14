@@ -24,60 +24,67 @@ class _AddStockScreenState extends State<AddStockScreen> {
   final List<StockItem> leftItems = [
     StockItem(name: 'แก้วเย็น', category: 'left'),
     StockItem(name: 'แก้วร้อน', category: 'left'),
+    StockItem(name: 'ฝาเรียบ', category: 'left'),
     StockItem(name: 'ฝาร้อน', category: 'left'),
-    StockItem(name: 'ฝาเย็น', category: 'left'),
-    StockItem(name: 'เฮลท์แพกโจ้', category: 'left'),
-    StockItem(name: 'หลอด', category: 'left'),
+    StockItem(name: 'เอสเพรสโซ่', category: 'left'),
+    StockItem(name: 'เข้ม', category: 'left'),
     StockItem(name: 'กลาง', category: 'left'),
-    StockItem(name: 'ส้อม', category: 'left'),
-    StockItem(name: 'มีดจะ', category: 'left'),
+    StockItem(name: 'อ่อน', category: 'left'),
+    StockItem(name: 'มัทฉะ', category: 'left'),
     StockItem(name: 'ซาเชียร', category: 'left'),
-    StockItem(name: 'ซามอง', category: 'left'),
-    StockItem(name: 'ไซวิดอิน', category: 'left'),
-    StockItem(name: 'โบวิต', category: 'left'),
-    StockItem(name: 'โกวิต', category: 'left'),
-    StockItem(name: 'ซาแมคกี้', category: 'left'),
+    StockItem(name: 'ชาแดง', category: 'left'),
+    StockItem(name: 'โอวัลติน', category: 'left'),
+    StockItem(name: 'ไมโล', category: 'left'),
+    StockItem(name: 'โกโก้', category: 'left'),
+    StockItem(name: 'ชาเนสที', category: 'left'),
     StockItem(name: 'ซาแอปเปิ้ล', category: 'left'),
-    StockItem(name: 'ซาวิตึ้', category: 'left'),
-    StockItem(name: 'ซามะนาว', category: 'left'),
-    StockItem(name: 'ซามะนาว', category: 'left'),
-    StockItem(name: 'ซาเปลือกส้ม', category: 'left'),
-    StockItem(name: 'ไซวิดลอด', category: 'left'),
+    StockItem(name: 'ชาพีช', category: 'left'),
+    StockItem(name: 'ชามะนาว', category: 'left'),
+    StockItem(name: 'ผงมะนาว', category: 'left'),
+    StockItem(name: 'ชาเอิลเกร', category: 'left'),
+    StockItem(name: 'ไวท์มอลต์', category: 'left'),
+    StockItem(name: 'ช็อคน้ำ', category: 'left'),
+    StockItem(name: 'น้ำตาลอ้อย', category: 'left'),
+    StockItem(name: 'คอฟฟี่เมท', category: 'left'),
+    StockItem(name: 'นมข้นจืด', category: 'left'),
   ];
 
   final List<StockItem> rightItems = [
+    StockItem(name: 'นมข้นหวาน', category: 'right'),
+    StockItem(name: 'นมสดฝาน้ำเงิน', category: 'right'),
+    StockItem(name: 'นมสดฝาขาว', category: 'right'),
+    StockItem(name: 'ชาเขียวมะนาว', category: 'right'),
     StockItem(name: 'หลอดเล็ก', category: 'right'),
     StockItem(name: 'หลอดร้อน', category: 'right'),
-    StockItem(name: 'ถุงเชียร์', category: 'right'),
-    StockItem(name: 'ถุงยู', category: 'right'),
-    StockItem(name: 'ฝาคัฟ', category: 'right'),
-    StockItem(name: 'โจ๊กา', category: 'right'),
+    StockItem(name: 'ถุงเดี่ยว', category: 'right'),
+    StockItem(name: 'ถุงคู่', category: 'right'),
+    StockItem(name: 'ทิชชู่', category: 'right'),
+    StockItem(name: 'โซดา', category: 'right'),
     StockItem(name: 'น้ำผึ้ง', category: 'right'),
-    StockItem(name: 'น้ำตาล', category: 'right'),
-    StockItem(name: 'น้ำแบะแซว', category: 'right'),
-    StockItem(name: 'โรวิโมะแซว', category: 'right'),
+    StockItem(name: 'น้ำส้ม', category: 'right'),
+    StockItem(name: 'น้ำมะพร้าว', category: 'right'),
+    StockItem(name: 'ไซรัปมะพร้าว', category: 'right'),
     StockItem(name: 'สตอเบอร์รี่', category: 'right'),
     StockItem(name: 'คิวี่', category: 'right'),
     StockItem(name: 'แอปเปิ้ล', category: 'right'),
     StockItem(name: 'บลูเบอร์รี่', category: 'right'),
     StockItem(name: 'บลูเลมอน', category: 'right'),
-    StockItem(name: 'แคตคาลูย', category: 'right'),
-    StockItem(name: 'เชพคูเลอม', category: 'right'),
-    StockItem(name: 'ดาว์นอล', category: 'right'),
+    StockItem(name: 'แคตคาลูป', category: 'right'),
+    StockItem(name: 'เฮลบลูบอย', category: 'right'),
+    StockItem(name: 'คาราเมล', category: 'right'),
     StockItem(name: 'วานิลลา', category: 'right'),
-    StockItem(name: 'โววิช็อต', category: 'right'),
-    StockItem(name: 'น้ำเกาตอง', category: 'right'),
-    StockItem(name: 'คอฟฟีเมทตอง', category: 'right'),
+    StockItem(name: 'ไวท์ช็อค', category: 'right'),
+    StockItem(name: 'น้ำตาลซอง', category: 'right'),
+    StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
   ];
 
   final List<StockItem> bottomItems = [
-    StockItem(name: 'น้ำขวดย่อย', category: 'bottom'),
-    StockItem(name: 'คอฟฟี่มาท', category: 'bottom', value: '1000'),
-    StockItem(name: 'นมข้นจืด', category: 'bottom', value: '500'),
-    StockItem(name: 'นมข้นหวาน', category: 'bottom', value: '100'),
-    StockItem(name: 'แม่สตส่งน้ำเย็น', category: 'bottom', value: '50'),
-    StockItem(name: 'แม่สตส่งชา', category: 'bottom', value: '20'),
-    StockItem(name: 'ซาเชียรนมสาร', category: 'bottom', value: 'เหรียญ'),
+    StockItem(name: '1000', category: 'bottom'),
+    StockItem(name: '500', category: 'bottom'),
+    StockItem(name: '100', category: 'bottom'),
+    StockItem(name: '50', category: 'bottom'),
+    StockItem(name: '20', category: 'bottom'),
+    StockItem(name: 'เหรียญ', category: 'bottom'),
   ];
 
   // Function to update stock item values
@@ -201,15 +208,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(
-              child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'กะ',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.access_time),
-                ),
-              ),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text("Submit")),
           ],
         ),
       ),
@@ -238,12 +237,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 columns: const [
                   DataColumn(label: Text('ยอดขาย')),
                   DataColumn(label: Text('แก้ว')),
-                  DataColumn(label: Text('แพค')),
+                  DataColumn(label: Text('เยติ')),
                   DataColumn(label: Text('จำนวนเงิน')),
-                  DataColumn(label: Text('โอน')),
-                  DataColumn(label: Text('รายจ่าย')),
+                  DataColumn(label: Text('รายจ่ายอื่นๆ')),
                   DataColumn(label: Text('จำนวนเงิน')),
-                  DataColumn(label: Text('จำนวนเงินยอดขวด')),
                 ],
                 rows:
                     topItems.map((item) {
@@ -268,7 +265,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'แพค',
+                                    column: 'เยติ',
                                   ),
                             ),
                           ),
@@ -284,10 +281,14 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
-                              value: item.beginStock,
-                              onChanged:
-                                  (value) => updateStockItemValue(item, value),
+                            SizedBox(
+                              width: 120,
+                              child: _buildNumberInput(
+                                value: item.beginStock,
+                                onChanged:
+                                    (value) =>
+                                        updateStockItemValue(item, value),
+                              ),
                             ),
                           ),
                           DataCell(
@@ -297,14 +298,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => updateStockItemValue(item, value),
                             ),
                           ),
-                          DataCell(
-                            _buildNumberInput(
-                              value: item.remaining,
-                              onChanged:
-                                  (value) => updateStockItemValue(item, value),
-                            ),
-                          ),
-                          DataCell(Text(item.value)),
                         ],
                       );
                     }).toList(),
@@ -356,7 +349,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 columnSpacing: 20,
                 columns: const [
                   DataColumn(label: Text('รายการ')),
-                  DataColumn(label: Text('เริ่มต็อก')),
+                  DataColumn(label: Text('เติมสต๊อก')),
                   DataColumn(label: Text('ใช้ไป')),
                   DataColumn(label: Text('เหลือ')),
                 ],
@@ -420,7 +413,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'วัตถุดิบ',
+                'ยอดเงินคงเหลือ',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -431,16 +424,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 columns: const [
                   DataColumn(label: Text('รายการ')),
                   DataColumn(label: Text('จำนวน')),
-                  DataColumn(label: Text('เริ่มต็อก')),
-                  DataColumn(label: Text('ใช้ไป')),
-                  DataColumn(label: Text('เหลือ')),
+                  DataColumn(label: Text('ยอดรวม')),
                 ],
                 rows:
                     bottomItems.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text(item.name)),
-                          DataCell(Text(item.value)),
                           DataCell(
                             _buildNumberInput(
                               value: item.beginStock,
@@ -448,7 +438,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'เริ่มต็อก',
+                                    column: 'จำนวน',
                                   ),
                             ),
                           ),
@@ -459,18 +449,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'ใช้ไป',
-                                  ),
-                            ),
-                          ),
-                          DataCell(
-                            _buildNumberInput(
-                              value: item.remaining,
-                              onChanged:
-                                  (value) => updateStockItemValue(
-                                    item,
-                                    value,
-                                    column: 'เหลือ',
+                                    column: 'ยอดรวม',
                                   ),
                             ),
                           ),
@@ -500,8 +479,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(child: _buildTotalField('เงิน', '0')),
-                const SizedBox(width: 16),
+                Expanded(child: _buildTotalField('ทิป', '0')),
+                const SizedBox(width: 8),
+                Expanded(child: _buildTotalField('เกิน', '0')),
+                const SizedBox(width: 8),
                 Expanded(child: _buildTotalField('ขาด', '0')),
               ],
             ),
@@ -516,7 +497,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),
       controller: TextEditingController(text: value),
       readOnly: true,
