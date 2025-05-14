@@ -24,7 +24,9 @@ class StockScreen extends StatelessWidget {
                       vertical: 14,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/add-stock');
+                  },
                   child: const Text('เพิ่ม Sheet'),
                 ),
               ],

@@ -6,8 +6,8 @@ class StockTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stockList = [
-      {'name': 'stock01', 'date': '2025-05-13', 'user': 'คุณเอ'},
-      {'name': 'stock02', 'date': '2025-05-12', 'user': 'คุณบี'},
+      {'name': '2025-05-13-stock01', 'date': '2025-05-13', 'user': 'คุณเอ'},
+      {'name': '2025-05-13-stock02', 'date': '2025-05-12', 'user': 'คุณบี'},
     ];
 
     return Expanded(
@@ -17,10 +17,18 @@ class StockTable extends StatelessWidget {
           (states) => Colors.grey[200]!,
         ),
         columns: const [
-          DataColumn(label: Text('วันที่')),
-          DataColumn(label: Text('ชื่อไฟล์')),
-          DataColumn(label: Text('ลงโดย')),
-          DataColumn(label: Text('ดาวน์โหลด')),
+          DataColumn(label: Center(child: Text('วันที่'))),
+          DataColumn(label: Center(child: Text('ชื่อไฟล์'))),
+          DataColumn(label: Center(child: Text('ลงโดย'))),
+          DataColumn(
+            label: SizedBox(width: 50, child: Center(child: Text('ดาวน์โหลด'))),
+          ),
+          DataColumn(
+            label: SizedBox(width: 50, child: Center(child: Text('ลบ'))),
+          ),
+          DataColumn(
+            label: SizedBox(width: 50, child: Center(child: Text('แก้ไข'))),
+          ),
         ],
         rows:
             stockList.map((item) {
@@ -30,11 +38,33 @@ class StockTable extends StatelessWidget {
                   DataCell(Text(item['name']!)),
                   DataCell(Text(item['user']!)),
                   DataCell(
-                    IconButton(
-                      icon: const Icon(Icons.download),
-                      onPressed: () {
-                        // ทำการดาวน์โหลดไฟล์ PDF/Excel หรือข้อมูลตามต้องการ
-                      },
+                    Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.download),
+                        onPressed: () {
+                          // ทำการดาวน์โหลดไฟล์ PDF/Excel หรือข้อมูลตามต้องการ
+                        },
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          // ทำการลบ
+                        },
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          // ทำการแก้ไข
+                        },
+                      ),
                     ),
                   ),
                 ],

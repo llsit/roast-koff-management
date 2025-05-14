@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:roast_koff_management/features/home/presentation/screen/home_screen.dart';
+import 'package:roast_koff_management/features/stock/presentation/screen/add_stock_screen.dart';
 import 'features/auth/data/repository/auth_repository_impl.dart';
 import 'features/auth/domain/usecase/login_usecase.dart';
 import 'features/auth/presentation/screen/login_viewmodel.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginScreen(),
         '/home': (context) => const HomeScreen(),
+        '/add-stock': (context) => const AddStockScreen(),
       },
       home: AuthWrapper(),
     );
