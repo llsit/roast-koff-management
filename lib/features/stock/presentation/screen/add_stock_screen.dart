@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import '../../../../core/utils/constants.dart';
 import '../../data/stock_item.dart';
+import '../widgets/custom_data_table.dart';
+import '../widgets/number_input_field.dart';
 
 class AddStockScreen extends StatefulWidget {
   const AddStockScreen({super.key});
@@ -11,261 +13,427 @@ class AddStockScreen extends StatefulWidget {
 }
 
 class _AddStockScreenState extends State<AddStockScreen> {
-  // List of stock items from the form
-  final List<StockItem> topItems = [
-    StockItem(name: 'ร้อน', category: 'top'),
-    StockItem(name: 'เย็น', category: 'top'),
-    StockItem(name: 'ปั่น', category: 'top'),
-    StockItem(name: 'เงินเชียร์ +15', category: 'top'),
-    StockItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
-    StockItem(name: 'แก้วฟรี', category: 'top'),
-  ];
+  final TextEditingController _dateController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
 
-  final List<StockItem> leftItems = [
-    StockItem(name: 'แก้วเย็น', category: 'left'),
-    StockItem(name: 'แก้วร้อน', category: 'left'),
-    StockItem(name: 'ฝาเรียบ', category: 'left'),
-    StockItem(name: 'ฝาร้อน', category: 'left'),
-    StockItem(name: 'เอสเพรสโซ่', category: 'left'),
-    StockItem(name: 'เข้ม', category: 'left'),
-    StockItem(name: 'กลาง', category: 'left'),
-    StockItem(name: 'อ่อน', category: 'left'),
-    StockItem(name: 'มัทฉะ', category: 'left'),
-    StockItem(name: 'ซาเชียร', category: 'left'),
-    StockItem(name: 'ชาแดง', category: 'left'),
-    StockItem(name: 'โอวัลติน', category: 'left'),
-    StockItem(name: 'ไมโล', category: 'left'),
-    StockItem(name: 'โกโก้', category: 'left'),
-    StockItem(name: 'ชาเนสที', category: 'left'),
-    StockItem(name: 'ซาแอปเปิ้ล', category: 'left'),
-    StockItem(name: 'ชาพีช', category: 'left'),
-    StockItem(name: 'ชามะนาว', category: 'left'),
-    StockItem(name: 'ผงมะนาว', category: 'left'),
-    StockItem(name: 'ชาเอิลเกร', category: 'left'),
-    StockItem(name: 'ไวท์มอลต์', category: 'left'),
-    StockItem(name: 'ช็อคน้ำ', category: 'left'),
-    StockItem(name: 'น้ำตาลอ้อย', category: 'left'),
-    StockItem(name: 'คอฟฟี่เมท', category: 'left'),
-    StockItem(name: 'นมข้นจืด', category: 'left'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+  }
 
-  final List<StockItem> rightItems = [
-    StockItem(name: 'นมข้นหวาน', category: 'right'),
-    StockItem(name: 'นมสดฝาน้ำเงิน', category: 'right'),
-    StockItem(name: 'นมสดฝาขาว', category: 'right'),
-    StockItem(name: 'ชาเขียวมะนาว', category: 'right'),
-    StockItem(name: 'หลอดเล็ก', category: 'right'),
-    StockItem(name: 'หลอดร้อน', category: 'right'),
-    StockItem(name: 'ถุงเดี่ยว', category: 'right'),
-    StockItem(name: 'ถุงคู่', category: 'right'),
-    StockItem(name: 'ทิชชู่', category: 'right'),
-    StockItem(name: 'โซดา', category: 'right'),
-    StockItem(name: 'น้ำผึ้ง', category: 'right'),
-    StockItem(name: 'น้ำส้ม', category: 'right'),
-    StockItem(name: 'น้ำมะพร้าว', category: 'right'),
-    StockItem(name: 'ไซรัปมะพร้าว', category: 'right'),
-    StockItem(name: 'สตอเบอร์รี่', category: 'right'),
-    StockItem(name: 'คิวี่', category: 'right'),
-    StockItem(name: 'แอปเปิ้ล', category: 'right'),
-    StockItem(name: 'บลูเบอร์รี่', category: 'right'),
-    StockItem(name: 'บลูเลมอน', category: 'right'),
-    StockItem(name: 'แคตคาลูป', category: 'right'),
-    StockItem(name: 'เฮลบลูบอย', category: 'right'),
-    StockItem(name: 'คาราเมล', category: 'right'),
-    StockItem(name: 'วานิลลา', category: 'right'),
-    StockItem(name: 'ไวท์ช็อค', category: 'right'),
-    StockItem(name: 'น้ำตาลซอง', category: 'right'),
-    StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
-  ];
+  @override
+  void dispose() {
+    // _dateController.dispose();
+    super.dispose();
+  }
 
-  final List<StockItem> bottomLeftItems = [
-    StockItem(name: 'เงินสด', category: 'leftBottom'),
-    StockItem(name: 'โอน', category: 'leftBottom'),
-    StockItem(name: 'เงินทอน', category: 'leftBottom'),
-    StockItem(name: 'ทิป', category: 'leftBottom'),
-    StockItem(name: 'เกิน', category: 'leftBottom'),
-    StockItem(name: 'ขาด', category: 'leftBottom'),
-    StockItem(name: 'รวม', category: 'leftBottom'),
-  ];
-
-  final List<StockItem> bottomRightItems = [
-    StockItem(name: '1000', category: 'bottom'),
-    StockItem(name: '500', category: 'bottom'),
-    StockItem(name: '100', category: 'bottom'),
-    StockItem(name: '50', category: 'bottom'),
-    StockItem(name: '20', category: 'bottom'),
-    StockItem(name: 'เหรียญ', category: 'bottom'),
-  ];
+  // Stock data organized by category
+  final Map<String, List<StockItem>> _stockData = {
+    'sales': [
+      StockItem(name: 'ร้อน', category: 'top'),
+      StockItem(name: 'เย็น', category: 'top'),
+      StockItem(name: 'ปั่น', category: 'top'),
+      StockItem(name: 'เงินเชียร์ +15', category: 'top'),
+      StockItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
+      StockItem(name: 'แก้วฟรี', category: 'top'),
+    ],
+    'leftInventory': [
+      StockItem(name: 'แก้วเย็น', category: 'left'),
+      StockItem(name: 'แก้วร้อน', category: 'left'),
+      StockItem(name: 'ฝาเรียบ', category: 'left'),
+      StockItem(name: 'ฝาร้อน', category: 'left'),
+      StockItem(name: 'เอสเพรสโซ่', category: 'left'),
+      StockItem(name: 'เข้ม', category: 'left'),
+      StockItem(name: 'กลาง', category: 'left'),
+      StockItem(name: 'อ่อน', category: 'left'),
+      StockItem(name: 'มัทฉะ', category: 'left'),
+      StockItem(name: 'ซาเชียร', category: 'left'),
+      StockItem(name: 'ชาแดง', category: 'left'),
+      StockItem(name: 'โอวัลติน', category: 'left'),
+      StockItem(name: 'ไมโล', category: 'left'),
+      StockItem(name: 'โกโก้', category: 'left'),
+      StockItem(name: 'ชาเนสที', category: 'left'),
+      StockItem(name: 'ซาแอปเปิ้ล', category: 'left'),
+      StockItem(name: 'ชาพีช', category: 'left'),
+      StockItem(name: 'ชามะนาว', category: 'left'),
+      StockItem(name: 'ผงมะนาว', category: 'left'),
+      StockItem(name: 'ชาเอิลเกร', category: 'left'),
+      StockItem(name: 'ไวท์มอลต์', category: 'left'),
+      StockItem(name: 'ช็อคน้ำ', category: 'left'),
+      StockItem(name: 'น้ำตาลอ้อย', category: 'left'),
+      StockItem(name: 'คอฟฟี่เมท', category: 'left'),
+      StockItem(name: 'นมข้นจืด', category: 'left'),
+    ],
+    'rightInventory': [
+      StockItem(name: 'นมข้นหวาน', category: 'right'),
+      StockItem(name: 'นมสดฝาน้ำเงิน', category: 'right'),
+      StockItem(name: 'นมสดฝาขาว', category: 'right'),
+      StockItem(name: 'ชาเขียวมะนาว', category: 'right'),
+      StockItem(name: 'หลอดเล็ก', category: 'right'),
+      StockItem(name: 'หลอดร้อน', category: 'right'),
+      StockItem(name: 'ถุงเดี่ยว', category: 'right'),
+      StockItem(name: 'ถุงคู่', category: 'right'),
+      StockItem(name: 'ทิชชู่', category: 'right'),
+      StockItem(name: 'โซดา', category: 'right'),
+      StockItem(name: 'น้ำผึ้ง', category: 'right'),
+      StockItem(name: 'น้ำส้ม', category: 'right'),
+      StockItem(name: 'น้ำมะพร้าว', category: 'right'),
+      StockItem(name: 'ไซรัปมะพร้าว', category: 'right'),
+      StockItem(name: 'สตอเบอร์รี่', category: 'right'),
+      StockItem(name: 'คิวี่', category: 'right'),
+      StockItem(name: 'แอปเปิ้ล', category: 'right'),
+      StockItem(name: 'บลูเบอร์รี่', category: 'right'),
+      StockItem(name: 'บลูเลมอน', category: 'right'),
+      StockItem(name: 'แคตคาลูป', category: 'right'),
+      StockItem(name: 'เฮลบลูบอย', category: 'right'),
+      StockItem(name: 'คาราเมล', category: 'right'),
+      StockItem(name: 'วานิลลา', category: 'right'),
+      StockItem(name: 'ไวท์ช็อค', category: 'right'),
+      StockItem(name: 'น้ำตาลซอง', category: 'right'),
+      StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
+    ],
+    'cashSummary': [
+      StockItem(name: 'เงินสด', category: 'leftBottom'),
+      StockItem(name: 'โอน', category: 'leftBottom'),
+      StockItem(name: 'เงินทอน', category: 'leftBottom'),
+      StockItem(name: 'ทิป', category: 'leftBottom'),
+      StockItem(name: 'เกิน', category: 'leftBottom'),
+      StockItem(name: 'ขาด', category: 'leftBottom'),
+      StockItem(name: 'รวม', category: 'leftBottom'),
+    ],
+    'cashDetails': [
+      StockItem(name: '1000', category: 'bottom'),
+      StockItem(name: '500', category: 'bottom'),
+      StockItem(name: '100', category: 'bottom'),
+      StockItem(name: '50', category: 'bottom'),
+      StockItem(name: '20', category: 'bottom'),
+      StockItem(name: 'เหรียญ', category: 'bottom'),
+    ],
+  };
 
   // Function to update stock item values
-  void updateStockItemValue(StockItem item, String value, {String? column}) {
+  void _updateStockItemValue(StockItem item, String value, {String? column}) {
     setState(() {
-      if (column == 'แก้ว' || column == 'แพค') {
-        item.quantity1 = value;
-      } else if (column == 'จำนวนเงิน') {
-        item.quantity2 = value;
-      } else if (column == 'เริ่มต็อก') {
-        item.beginStock = value;
-      } else if (column == 'ใช้ไป') {
-        item.used = value;
-      } else if (column == 'เหลือ') {
-        item.remaining = value;
-      } else {
-        // Default value update
-        item.value = value;
+      switch (column) {
+        case 'แก้ว':
+        case 'แพค':
+          item.quantity1 = value;
+          break;
+        case 'จำนวนเงิน':
+          item.quantity2 = value;
+          break;
+        case 'เริ่มต็อก':
+          item.beginStock = value;
+          break;
+        case 'ใช้ไป':
+          item.used = value;
+          break;
+        case 'เหลือ':
+          item.remaining = value;
+          break;
+        default:
+          item.value = value;
       }
     });
+  }
+
+  // Show a snackbar message
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        width: 300,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  // Save stock data
+  void _saveStockData() {
+    // TODO: Implement save functionality to database or file
+    _showMessage('บันทึกข้อมูลเรียบร้อย');
+  }
+
+  // Print stock data
+  void _printStockData() {
+    // TODO: Implement print functionality
+    _showMessage('กำลังพิมพ์เอกสาร');
+  }
+
+  // Reset stock data
+  void _resetStockData() {
+    setState(() {
+      _stockData.forEach((key, items) {
+        for (var item in items) {
+          item.quantity1 = '';
+          item.quantity2 = '';
+          item.value = '';
+          item.beginStock = '';
+          item.used = '';
+          item.remaining = '';
+        }
+      });
+    });
+    _showMessage('รีเซ็ตข้อมูลเรียบร้อย');
+  }
+
+  // Show date picker
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        // _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('นับสต๊อก'),
+        title: const Text(
+          'นับสต๊อก',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 2,
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: () {
-              // TODO: Implement save functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
-              );
-            },
+            onPressed: _saveStockData,
+            tooltip: 'บันทึก',
           ),
           IconButton(
             icon: const Icon(Icons.print),
-            onPressed: () {
-              // TODO: Implement print functionality
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('พิมพ์เอกสาร')));
-            },
+            onPressed: _printStockData,
+            tooltip: 'พิมพ์',
           ),
         ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // Responsive layout based on screen width
-          if (constraints.maxWidth < 600) {
-            // Mobile layout
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildDateSection(),
-                  _buildTopSection(),
-                  _buildItemsSection(context, constraints),
-                  _buildBottomItemsSection(constraints),
-                ],
-              ),
-            );
-          } else {
-            // Tablet/PC layout
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(children: [Expanded(child: _buildDateSection())]),
-                  _buildTopSection(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: _buildItemList(leftItems, context, constraints),
-                      ),
-                      Expanded(
-                        child: _buildItemList(rightItems, context, constraints),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: _buildBottomSection()),
-                      Expanded(child: _buildLeftBottomSection()),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
+          return constraints.maxWidth < 600
+              ? _buildMobileLayout()
+              : _buildDesktopLayout();
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Reset or add new item functionality
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('รีเซ็ตข้อมูล')));
-        },
+        onPressed: _resetStockData,
+        backgroundColor: AppColors.primary,
+        tooltip: 'รีเซ็ตข้อมูล',
         child: const Icon(Icons.refresh),
       ),
     );
   }
 
-  Widget _buildDateSection() {
-    return Card(
-      margin: const EdgeInsets.all(8),
+  // Mobile layout
+  Widget _buildMobileLayout() {
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            Expanded(
-              child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'วันที่',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.calendar_today),
-                ),
-                readOnly: true,
-                onTap: () async {
-                  // Show date picker functionality
-                },
-              ),
+            _buildDateSection(),
+            _buildInventorySection(
+              _stockData['leftInventory']!,
+              'วัตถุดิบ (1)',
             ),
-            const SizedBox(width: 16),
-            ElevatedButton(onPressed: () {}, child: const Text("Submit")),
+            _buildSalesSection(),
+            _buildInventorySection(
+              _stockData['rightInventory']!,
+              'วัตถุดิบ (2)',
+            ),
+            _buildCashSummarySection(),
+            _buildCashDetailsSection(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTopSection() {
-    return Card(
-      margin: const EdgeInsets.all(8),
+  // Desktop/Tablet layout
+  Widget _buildDesktopLayout() {
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildDateSection(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _buildInventorySection(
+                    _stockData['leftInventory']!,
+                    'วัตถุดิบ (1)',
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildInventorySection(
+                    _stockData['rightInventory']!,
+                    'วัตถุดิบ (2)',
+                  ),
+                ),
+              ],
+            ),
+            _buildSalesSection(),
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: _buildCashSummarySection()),
+                const SizedBox(width: 16),
+                Expanded(child: _buildCashDetailsSection()),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Date selection section
+  Widget _buildDateSection() {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _dateController,
+                decoration: InputDecoration(
+                  labelText: 'วันที่',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.calendar_today,
+                    color: AppColors.primary,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                readOnly: true,
+                onTap: _selectDate,
+              ),
+            ),
+            const SizedBox(width: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Submit data for selected date
+                _showMessage('ข้อมูลของวันที่ ${_dateController.text}');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              icon: const Icon(Icons.check),
+              label: const Text("ตกลง"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Sales section
+  Widget _buildSalesSection() {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'ยอดขาย',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            Row(
+              children: [
+                const Icon(Icons.monetization_on, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'ยอดขาย',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
+            const Divider(height: 24),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 20,
+              child: CustomDataTable(
                 columns: const [
                   DataColumn(label: Text('ยอดขาย')),
                   DataColumn(label: Text('แก้ว')),
                   DataColumn(label: Text('เยติ')),
-                  DataColumn(label: Text('จำนวนเงิน')),
+                  DataColumn(
+                    label: Text(
+                      'จำนวนเงิน',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   DataColumn(label: Text('รายจ่ายอื่นๆ')),
-                  DataColumn(label: Text('จำนวนเงิน')),
+                  DataColumn(
+                    label: Text(
+                      'จำนวนเงิน',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
                 rows:
-                    topItems.map((item) {
+                    _stockData['sales']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text(item.name)),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.quantity1,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'แก้ว',
@@ -273,10 +441,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.quantity2,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'เยติ',
@@ -284,10 +452,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.value,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'จำนวนเงิน',
@@ -295,21 +463,18 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            SizedBox(
+                            NumberInputField(
+                              value: item.beginStock,
+                              onChanged:
+                                  (value) => _updateStockItemValue(item, value),
                               width: 120,
-                              child: _buildNumberInput(
-                                value: item.beginStock,
-                                onChanged:
-                                    (value) =>
-                                        updateStockItemValue(item, value),
-                              ),
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.used,
                               onChanged:
-                                  (value) => updateStockItemValue(item, value),
+                                  (value) => _updateStockItemValue(item, value),
                             ),
                           ),
                         ],
@@ -323,44 +488,34 @@ class _AddStockScreenState extends State<AddStockScreen> {
     );
   }
 
-  Widget _buildItemsSection(BuildContext context, BoxConstraints constraints) {
-    if (constraints.maxWidth < 600) {
-      // Mobile layout - items stacked vertically
-      return Column(
-        children: [
-          _buildItemList(leftItems, context, constraints),
-          _buildItemList(rightItems, context, constraints),
-        ],
-      );
-    } else {
-      // This is handled in the main build method for tablet/desktop
-      return Container();
-    }
-  }
-
-  Widget _buildItemList(
-    List<StockItem> items,
-    BuildContext context,
-    BoxConstraints constraints,
-  ) {
+  // Inventory section
+  Widget _buildInventorySection(List<StockItem> items, String title) {
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'รายการสินค้า',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            Row(
+              children: [
+                const Icon(Icons.inventory_2, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
+            const Divider(height: 24),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 20,
+              child: CustomDataTable(
                 columns: const [
                   DataColumn(label: Text('รายการ')),
                   DataColumn(label: Text('เติมสต๊อก')),
@@ -373,10 +528,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         cells: [
                           DataCell(Text(item.name)),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.beginStock,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'เริ่มต็อก',
@@ -384,10 +539,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.used,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'ใช้ไป',
@@ -395,10 +550,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.remaining,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'เหลือ',
@@ -416,51 +571,48 @@ class _AddStockScreenState extends State<AddStockScreen> {
     );
   }
 
-  Widget _buildBottomItemsSection(BoxConstraints constraints) {
-    if (constraints.maxWidth < 600) {
-      // Mobile layout - items stacked vertically
-      return Column(
-        children: [_buildLeftBottomSection(), _buildBottomSection()],
-      );
-    } else {
-      // This is handled in the main build method for tablet/desktop
-      return Container();
-    }
-  }
-
-  Widget _buildLeftBottomSection() {
+  // Cash summary section
+  Widget _buildCashSummarySection() {
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'ยอดเงินรวม',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            Row(
+              children: [
+                const Icon(Icons.payments, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'ยอดเงินรวม',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
+            const Divider(height: 24),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 20,
+              child: CustomDataTable(
                 columns: const [
                   DataColumn(label: Text('รายการ')),
                   DataColumn(label: Text('จำนวนเงิน')),
                 ],
                 rows:
-                    bottomLeftItems.map((item) {
+                    _stockData['cashSummary']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text(item.name)),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.beginStock,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'จำนวนเงิน',
@@ -478,40 +630,49 @@ class _AddStockScreenState extends State<AddStockScreen> {
     );
   }
 
-  Widget _buildBottomSection() {
+  // Cash details section
+  Widget _buildCashDetailsSection() {
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'ยอดเงินคงเหลือ',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            Row(
+              children: [
+                const Icon(Icons.attach_money, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'ยอดเงินคงเหลือ',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
+            const Divider(height: 24),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 20,
+              child: CustomDataTable(
                 columns: const [
                   DataColumn(label: Text('รายการ')),
                   DataColumn(label: Text('จำนวน')),
                   DataColumn(label: Text('ยอดรวม')),
                 ],
                 rows:
-                    bottomRightItems.map((item) {
+                    _stockData['cashDetails']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text(item.name)),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.beginStock,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'จำนวน',
@@ -519,10 +680,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            _buildNumberInput(
+                            NumberInputField(
                               value: item.used,
                               onChanged:
-                                  (value) => updateStockItemValue(
+                                  (value) => _updateStockItemValue(
                                     item,
                                     value,
                                     column: 'ยอดรวม',
@@ -536,25 +697,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildNumberInput({
-    String? value,
-    required Function(String) onChanged,
-  }) {
-    return SizedBox(
-      width: 80,
-      child: TextField(
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          border: OutlineInputBorder(),
-        ),
-        controller: TextEditingController(text: value),
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        onChanged: onChanged,
       ),
     );
   }
