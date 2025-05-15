@@ -78,7 +78,17 @@ class _AddStockScreenState extends State<AddStockScreen> {
     StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
   ];
 
-  final List<StockItem> bottomItems = [
+  final List<StockItem> bottomLeftItems = [
+    StockItem(name: 'เงินสด', category: 'leftBottom'),
+    StockItem(name: 'โอน', category: 'leftBottom'),
+    StockItem(name: 'เงินทอน', category: 'leftBottom'),
+    StockItem(name: 'ทิป', category: 'leftBottom'),
+    StockItem(name: 'เกิน', category: 'leftBottom'),
+    StockItem(name: 'ขาด', category: 'leftBottom'),
+    StockItem(name: 'รวม', category: 'leftBottom'),
+  ];
+
+  final List<StockItem> bottomRightItems = [
     StockItem(name: '1000', category: 'bottom'),
     StockItem(name: '500', category: 'bottom'),
     StockItem(name: '100', category: 'bottom'),
@@ -144,8 +154,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   _buildDateSection(),
                   _buildTopSection(),
                   _buildItemsSection(context, constraints),
-                  _buildBottomSection(),
-                  _buildTotalSection(),
+                  _buildBottomItemsSection(constraints),
                 ],
               ),
             );
@@ -167,8 +176,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                       ),
                     ],
                   ),
-                  _buildBottomSection(),
-                  _buildTotalSection(),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _buildBottomSection()),
+                      Expanded(child: _buildLeftBottomSection()),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -402,6 +416,68 @@ class _AddStockScreenState extends State<AddStockScreen> {
     );
   }
 
+  Widget _buildBottomItemsSection(BoxConstraints constraints) {
+    if (constraints.maxWidth < 600) {
+      // Mobile layout - items stacked vertically
+      return Column(
+        children: [_buildLeftBottomSection(), _buildBottomSection()],
+      );
+    } else {
+      // This is handled in the main build method for tablet/desktop
+      return Container();
+    }
+  }
+
+  Widget _buildLeftBottomSection() {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'ยอดเงินรวม',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 20,
+                columns: const [
+                  DataColumn(label: Text('รายการ')),
+                  DataColumn(label: Text('จำนวนเงิน')),
+                ],
+                rows:
+                    bottomLeftItems.map((item) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(item.name)),
+                          DataCell(
+                            _buildNumberInput(
+                              value: item.beginStock,
+                              onChanged:
+                                  (value) => updateStockItemValue(
+                                    item,
+                                    value,
+                                    column: 'จำนวนเงิน',
+                                  ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildBottomSection() {
     return Card(
       margin: const EdgeInsets.all(8),
@@ -427,7 +503,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   DataColumn(label: Text('ยอดรวม')),
                 ],
                 rows:
-                    bottomItems.map((item) {
+                    bottomRightItems.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text(item.name)),
@@ -461,47 +537,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTotalSection() {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Text(
-              'รวมยอดเงิน',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(child: _buildTotalField('ทิป', '0')),
-                const SizedBox(width: 8),
-                Expanded(child: _buildTotalField('เกิน', '0')),
-                const SizedBox(width: 8),
-                Expanded(child: _buildTotalField('ขาด', '0')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTotalField(String label, String value) {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      ),
-      controller: TextEditingController(text: value),
-      readOnly: true,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 
