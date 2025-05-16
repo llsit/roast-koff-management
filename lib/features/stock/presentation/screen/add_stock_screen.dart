@@ -30,14 +30,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Stock data organized by category
   final Map<String, List<StockItem>> _stockData = {
-    'sales': [
-      StockItem(name: 'ร้อน', category: 'top'),
-      StockItem(name: 'เย็น', category: 'top'),
-      StockItem(name: 'ปั่น', category: 'top'),
-      StockItem(name: 'เงินเชียร์ +15', category: 'top'),
-      StockItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
-      StockItem(name: 'แก้วฟรี', category: 'top'),
-    ],
     'leftInventory': [
       StockItem(name: 'แก้วเย็น', category: 'left'),
       StockItem(name: 'แก้วร้อน', category: 'left'),
@@ -92,6 +84,14 @@ class _AddStockScreenState extends State<AddStockScreen> {
       StockItem(name: 'ไวท์ช็อค', category: 'right'),
       StockItem(name: 'น้ำตาลซอง', category: 'right'),
       StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
+    ],
+    'sales': [
+      StockItem(name: 'ร้อน', category: 'top'),
+      StockItem(name: 'เย็น', category: 'top'),
+      StockItem(name: 'ปั่น', category: 'top'),
+      StockItem(name: 'เงินเชียร์ +15', category: 'top'),
+      StockItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
+      StockItem(name: 'แก้วฟรี', category: 'top'),
     ],
     'cashSummary': [
       StockItem(name: 'เงินสด', category: 'leftBottom'),
