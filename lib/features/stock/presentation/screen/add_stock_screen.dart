@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:roast_koff_management/features/stock/data/stock_sale_item.dart';
+import 'package:roast_koff_management/features/stock/provider/stock_table_provider.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../data/stock_cash_remain_item.dart';
+import '../../data/stock_detail_item.dart';
+import '../../data/stock_inventory_item.dart';
 import '../../data/stock_item.dart';
 import '../widgets/custom_data_table.dart';
 import '../widgets/number_input_field.dart';
@@ -28,115 +34,8 @@ class _AddStockScreenState extends State<AddStockScreen> {
     super.dispose();
   }
 
-  // Stock data organized by category
-  final Map<String, List<StockItem>> _stockData = {
-    'leftInventory': [
-      StockItem(name: 'แก้วเย็น', category: 'left'),
-      StockItem(name: 'แก้วร้อน', category: 'left'),
-      StockItem(name: 'ฝาเรียบ', category: 'left'),
-      StockItem(name: 'ฝาร้อน', category: 'left'),
-      StockItem(name: 'เอสเพรสโซ่', category: 'left'),
-      StockItem(name: 'เข้ม', category: 'left'),
-      StockItem(name: 'กลาง', category: 'left'),
-      StockItem(name: 'อ่อน', category: 'left'),
-      StockItem(name: 'มัทฉะ', category: 'left'),
-      StockItem(name: 'ซาเชียร', category: 'left'),
-      StockItem(name: 'ชาแดง', category: 'left'),
-      StockItem(name: 'โอวัลติน', category: 'left'),
-      StockItem(name: 'ไมโล', category: 'left'),
-      StockItem(name: 'โกโก้', category: 'left'),
-      StockItem(name: 'ชาเนสที', category: 'left'),
-      StockItem(name: 'ซาแอปเปิ้ล', category: 'left'),
-      StockItem(name: 'ชาพีช', category: 'left'),
-      StockItem(name: 'ชามะนาว', category: 'left'),
-      StockItem(name: 'ผงมะนาว', category: 'left'),
-      StockItem(name: 'ชาเอิลเกร', category: 'left'),
-      StockItem(name: 'ไวท์มอลต์', category: 'left'),
-      StockItem(name: 'ช็อคน้ำ', category: 'left'),
-      StockItem(name: 'น้ำตาลอ้อย', category: 'left'),
-      StockItem(name: 'คอฟฟี่เมท', category: 'left'),
-      StockItem(name: 'นมข้นจืด', category: 'left'),
-    ],
-    'rightInventory': [
-      StockItem(name: 'นมข้นหวาน', category: 'right'),
-      StockItem(name: 'นมสดฝาน้ำเงิน', category: 'right'),
-      StockItem(name: 'นมสดฝาขาว', category: 'right'),
-      StockItem(name: 'ชาเขียวมะนาว', category: 'right'),
-      StockItem(name: 'หลอดเล็ก', category: 'right'),
-      StockItem(name: 'หลอดร้อน', category: 'right'),
-      StockItem(name: 'ถุงเดี่ยว', category: 'right'),
-      StockItem(name: 'ถุงคู่', category: 'right'),
-      StockItem(name: 'ทิชชู่', category: 'right'),
-      StockItem(name: 'โซดา', category: 'right'),
-      StockItem(name: 'น้ำผึ้ง', category: 'right'),
-      StockItem(name: 'น้ำส้ม', category: 'right'),
-      StockItem(name: 'น้ำมะพร้าว', category: 'right'),
-      StockItem(name: 'ไซรัปมะพร้าว', category: 'right'),
-      StockItem(name: 'สตอเบอร์รี่', category: 'right'),
-      StockItem(name: 'คิวี่', category: 'right'),
-      StockItem(name: 'แอปเปิ้ล', category: 'right'),
-      StockItem(name: 'บลูเบอร์รี่', category: 'right'),
-      StockItem(name: 'บลูเลมอน', category: 'right'),
-      StockItem(name: 'แคตคาลูป', category: 'right'),
-      StockItem(name: 'เฮลบลูบอย', category: 'right'),
-      StockItem(name: 'คาราเมล', category: 'right'),
-      StockItem(name: 'วานิลลา', category: 'right'),
-      StockItem(name: 'ไวท์ช็อค', category: 'right'),
-      StockItem(name: 'น้ำตาลซอง', category: 'right'),
-      StockItem(name: 'คอฟฟีเมทซอง', category: 'right'),
-    ],
-    'sales': [
-      StockItem(name: 'ร้อน', category: 'top'),
-      StockItem(name: 'เย็น', category: 'top'),
-      StockItem(name: 'ปั่น', category: 'top'),
-      StockItem(name: 'เงินเชียร์ +15', category: 'top'),
-      StockItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
-      StockItem(name: 'แก้วฟรี', category: 'top'),
-    ],
-    'cashSummary': [
-      StockItem(name: 'เงินสด', category: 'leftBottom'),
-      StockItem(name: 'โอน', category: 'leftBottom'),
-      StockItem(name: 'เงินทอน', category: 'leftBottom'),
-      StockItem(name: 'ทิป', category: 'leftBottom'),
-      StockItem(name: 'เกิน', category: 'leftBottom'),
-      StockItem(name: 'ขาด', category: 'leftBottom'),
-      StockItem(name: 'รวม', category: 'leftBottom'),
-    ],
-    'cashDetails': [
-      StockItem(name: '1000', category: 'bottom'),
-      StockItem(name: '500', category: 'bottom'),
-      StockItem(name: '100', category: 'bottom'),
-      StockItem(name: '50', category: 'bottom'),
-      StockItem(name: '20', category: 'bottom'),
-      StockItem(name: 'เหรียญ', category: 'bottom'),
-    ],
-  };
-
   // Function to update stock item values
-  void _updateStockItemValue(StockItem item, String value, {String? column}) {
-    setState(() {
-      switch (column) {
-        case 'แก้ว':
-        case 'แพค':
-          item.quantity1 = value;
-          break;
-        case 'จำนวนเงิน':
-          item.quantity2 = value;
-          break;
-        case 'เริ่มต็อก':
-          item.beginStock = value;
-          break;
-        case 'ใช้ไป':
-          item.used = value;
-          break;
-        case 'เหลือ':
-          item.remaining = value;
-          break;
-        default:
-          item.value = value;
-      }
-    });
-  }
+  void _updateStockItemValue(StockItem item, String value, {String? column}) {}
 
   // Show a snackbar message
   void _showMessage(String message) {
@@ -164,18 +63,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Reset stock data
   void _resetStockData() {
-    setState(() {
-      _stockData.forEach((key, items) {
-        for (var item in items) {
-          item.quantity1 = '';
-          item.quantity2 = '';
-          item.value = '';
-          item.beginStock = '';
-          item.used = '';
-          item.remaining = '';
-        }
-      });
-    });
     _showMessage('รีเซ็ตข้อมูลเรียบร้อย');
   }
 
@@ -210,6 +97,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final stockProvider = Provider.of<StockTableProvider>(context);
+    var stockData = stockProvider.stockData;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -235,8 +125,8 @@ class _AddStockScreenState extends State<AddStockScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return constraints.maxWidth < 600
-              ? _buildMobileLayout()
-              : _buildDesktopLayout();
+              ? _buildMobileLayout(stockData)
+              : _buildDesktopLayout(stockData);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -249,24 +139,21 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Mobile layout
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(Map<String, List<StockItem>> stockData) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            _buildDateSection(),
+            _buildDateSection(stockData),
+            _buildInventorySection(stockData['leftInventory']!, 'วัตถุดิบ (1)'),
+            _buildSalesSection(stockData),
             _buildInventorySection(
-              _stockData['leftInventory']!,
-              'วัตถุดิบ (1)',
-            ),
-            _buildSalesSection(),
-            _buildInventorySection(
-              _stockData['rightInventory']!,
+              stockData['rightInventory']!,
               'วัตถุดิบ (2)',
             ),
-            _buildCashSummarySection(),
-            _buildCashDetailsSection(),
+            _buildCashSummarySection(stockData),
+            _buildCashDetailsSection(stockData),
           ],
         ),
       ),
@@ -274,39 +161,39 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Desktop/Tablet layout
-  Widget _buildDesktopLayout() {
+  Widget _buildDesktopLayout(Map<String, List<StockItem>> stockData) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildDateSection(),
+            _buildDateSection(stockData),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: _buildInventorySection(
-                    _stockData['leftInventory']!,
+                    stockData['leftInventory']!,
                     'วัตถุดิบ (1)',
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildInventorySection(
-                    _stockData['rightInventory']!,
+                    stockData['rightInventory']!,
                     'วัตถุดิบ (2)',
                   ),
                 ),
               ],
             ),
-            _buildSalesSection(),
+            _buildSalesSection(stockData),
             const SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _buildCashSummarySection()),
+                Expanded(child: _buildCashSummarySection(stockData)),
                 const SizedBox(width: 16),
-                Expanded(child: _buildCashDetailsSection()),
+                Expanded(child: _buildCashDetailsSection(stockData)),
               ],
             ),
           ],
@@ -316,7 +203,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Date selection section
-  Widget _buildDateSection() {
+  Widget _buildDateSection(Map<String, List<StockItem>> stockData) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -379,7 +266,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Sales section
-  Widget _buildSalesSection() {
+  Widget _buildSalesSection(Map<String, List<StockItem>> stockData) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -416,22 +303,22 @@ class _AddStockScreenState extends State<AddStockScreen> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  DataColumn(label: Text('รายจ่ายอื่นๆ')),
-                  DataColumn(
-                    label: Text(
-                      'จำนวนเงิน',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  // DataColumn(label: Text('รายจ่ายอื่นๆ')),
+                  // DataColumn(
+                  //   label: Text(
+                  //     'จำนวนเงิน',
+                  //     style: TextStyle(fontWeight: FontWeight.bold),
+                  //   ),
+                  // ),
                 ],
                 rows:
-                    _stockData['sales']!.map((item) {
+                    stockData['sales']!.map((item) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(item.name)),
+                          DataCell(Text((item as StockSalesItem).name)),
                           DataCell(
                             NumberInputField(
-                              value: item.quantity1,
+                              value: item.used,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -442,7 +329,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           ),
                           DataCell(
                             NumberInputField(
-                              value: item.quantity2,
+                              value: item.usedCustomer,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -453,7 +340,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           ),
                           DataCell(
                             NumberInputField(
-                              value: item.value,
+                              value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -462,21 +349,21 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   ),
                             ),
                           ),
-                          DataCell(
-                            NumberInputField(
-                              value: item.beginStock,
-                              onChanged:
-                                  (value) => _updateStockItemValue(item, value),
-                              width: 120,
-                            ),
-                          ),
-                          DataCell(
-                            NumberInputField(
-                              value: item.used,
-                              onChanged:
-                                  (value) => _updateStockItemValue(item, value),
-                            ),
-                          ),
+                          // DataCell(
+                          //   NumberInputField(
+                          //     value: item.beginStock,
+                          //     onChanged:
+                          //         (value) => _updateStockItemValue(item, value),
+                          //     width: 120,
+                          //   ),
+                          // ),
+                          // DataCell(
+                          //   NumberInputField(
+                          //     value: item.used,
+                          //     onChanged:
+                          //         (value) => _updateStockItemValue(item, value),
+                          //   ),
+                          // ),
                         ],
                       );
                     }).toList(),
@@ -526,10 +413,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
                     items.map((item) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(item.name)),
+                          DataCell(Text((item as StockInventoryItem).name)),
                           DataCell(
                             NumberInputField(
-                              value: item.beginStock,
+                              value: item.value,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -572,7 +459,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Cash summary section
-  Widget _buildCashSummarySection() {
+  Widget _buildCashSummarySection(Map<String, List<StockItem>> stockData) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -604,13 +491,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   DataColumn(label: Text('จำนวนเงิน')),
                 ],
                 rows:
-                    _stockData['cashSummary']!.map((item) {
+                    stockData['cashSummary']!.map((item) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(item.name)),
+                          DataCell(Text((item as StockSummaryItem).name)),
                           DataCell(
                             NumberInputField(
-                              value: item.beginStock,
+                              value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -631,7 +518,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Cash details section
-  Widget _buildCashDetailsSection() {
+  Widget _buildCashDetailsSection(Map<String, List<StockItem>> stockData) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -664,13 +551,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   DataColumn(label: Text('ยอดรวม')),
                 ],
                 rows:
-                    _stockData['cashDetails']!.map((item) {
+                    stockData['cashDetails']!.map((item) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(item.name)),
+                          DataCell(Text((item as StockCashRemainItem).name)),
                           DataCell(
                             NumberInputField(
-                              value: item.beginStock,
+                              value: item.value,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,
@@ -681,7 +568,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           ),
                           DataCell(
                             NumberInputField(
-                              value: item.used,
+                              value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
                                     item,

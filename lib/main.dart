@@ -1,18 +1,21 @@
+import 'dart:io' show Platform;
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:roast_koff_management/features/home/presentation/screen/home_screen.dart';
 import 'package:roast_koff_management/features/stock/presentation/screen/add_stock_screen.dart';
+
 import 'features/auth/data/repository/auth_repository_impl.dart';
 import 'features/auth/domain/usecase/login_usecase.dart';
+import 'features/auth/presentation/screen/login_screen.dart';
 import 'features/auth/presentation/screen/login_viewmodel.dart';
 import 'features/home/presentation/screen/menu_provider.dart';
+import 'features/stock/provider/stock_table_provider.dart';
 import 'firebase_options.dart';
-import 'features/auth/presentation/screen/login_screen.dart';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +39,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel(loginUseCase)),
-        ChangeNotifierProvider(create: (_) => MenuProvider())
+        ChangeNotifierProvider(create: (_) => MenuProvider()),
+        ChangeNotifierProvider(create: (_) => StockTableProvider()),
       ],
       child: const MyApp(),
     ),
@@ -78,8 +82,6 @@ class AuthWrapper extends StatelessWidget {
       }
     });
 
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
