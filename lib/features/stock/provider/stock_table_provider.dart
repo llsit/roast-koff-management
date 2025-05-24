@@ -92,4 +92,48 @@ class StockTableProvider extends ChangeNotifier {
   };
 
   Map<String, List<StockItem>> get stockData => _stockData;
+
+  List<StockItem> getTable(String title) => _stockData[title]!;
+
+  void updateInventoryUsed(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockInventoryItem) {
+      final updatedItem = item.copyWith(used: value.toString());
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateInventory(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockInventoryItem) {
+      final updatedItem = item.copyWith(value: value.toString());
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateRemaining(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+    if (item is StockInventoryItem) {
+      item.calculateRemaining();
+      notifyListeners();
+    }
+  }
 }

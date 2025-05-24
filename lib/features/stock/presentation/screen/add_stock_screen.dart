@@ -21,11 +21,23 @@ class AddStockScreen extends StatefulWidget {
 class _AddStockScreenState extends State<AddStockScreen> {
   final TextEditingController _dateController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  late StockTableProvider stockTableProvider;
+  late Map<String, List<StockItem>> _stockData;
 
   @override
   void initState() {
     super.initState();
     // _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    stockTableProvider = Provider.of<StockTableProvider>(
+      context,
+      listen: false,
+    );
+    _stockData = stockTableProvider.stockData;
   }
 
   @override
@@ -35,7 +47,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Function to update stock item values
-  void _updateStockItemValue(StockItem item, String value, {String? column}) {}
+  void _updateStockItemValue(StockItem item, String value, {String? table}) {}
 
   // Show a snackbar message
   void _showMessage(String message) {
@@ -97,9 +109,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final stockProvider = Provider.of<StockTableProvider>(context);
-    var stockData = stockProvider.stockData;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -125,8 +134,8 @@ class _AddStockScreenState extends State<AddStockScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return constraints.maxWidth < 600
-              ? _buildMobileLayout(stockData)
-              : _buildDesktopLayout(stockData);
+              ? _buildMobileLayout()
+              : _buildDesktopLayout();
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -139,21 +148,26 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Mobile layout
-  Widget _buildMobileLayout(Map<String, List<StockItem>> stockData) {
+  Widget _buildMobileLayout() {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            _buildDateSection(stockData),
-            _buildInventorySection(stockData['leftInventory']!, 'วัตถุดิบ (1)'),
-            _buildSalesSection(stockData),
+            _buildDateSection(),
             _buildInventorySection(
-              stockData['rightInventory']!,
-              'วัตถุดิบ (2)',
+              _stockData['leftInventory']!,
+              'วัตถุดิบ (1)',
+              'leftInventory',
             ),
-            _buildCashSummarySection(stockData),
-            _buildCashDetailsSection(stockData),
+            _buildSalesSection(),
+            _buildInventorySection(
+              _stockData['rightInventory']!,
+              'วัตถุดิบ (2)',
+              'rightInventory',
+            ),
+            _buildCashSummarySection(),
+            _buildCashDetailsSection(),
           ],
         ),
       ),
@@ -161,39 +175,41 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Desktop/Tablet layout
-  Widget _buildDesktopLayout(Map<String, List<StockItem>> stockData) {
+  Widget _buildDesktopLayout() {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildDateSection(stockData),
+            _buildDateSection(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: _buildInventorySection(
-                    stockData['leftInventory']!,
+                    _stockData['leftInventory']!,
                     'วัตถุดิบ (1)',
+                    'leftInventory',
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildInventorySection(
-                    stockData['rightInventory']!,
+                    _stockData['rightInventory']!,
                     'วัตถุดิบ (2)',
+                    'rightInventory',
                   ),
                 ),
               ],
             ),
-            _buildSalesSection(stockData),
+            _buildSalesSection(),
             const SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _buildCashSummarySection(stockData)),
+                Expanded(child: _buildCashSummarySection()),
                 const SizedBox(width: 16),
-                Expanded(child: _buildCashDetailsSection(stockData)),
+                Expanded(child: _buildCashDetailsSection()),
               ],
             ),
           ],
@@ -203,7 +219,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Date selection section
-  Widget _buildDateSection(Map<String, List<StockItem>> stockData) {
+  Widget _buildDateSection() {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -266,7 +282,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Sales section
-  Widget _buildSalesSection(Map<String, List<StockItem>> stockData) {
+  Widget _buildSalesSection() {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -312,7 +328,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   // ),
                 ],
                 rows:
-                    stockData['sales']!.map((item) {
+                    _stockData['sales']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text((item as StockSalesItem).name)),
@@ -323,7 +339,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'แก้ว',
+                                    table: 'แก้ว',
                                   ),
                             ),
                           ),
@@ -334,7 +350,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'เยติ',
+                                    table: 'เยติ',
                                   ),
                             ),
                           ),
@@ -345,7 +361,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'จำนวนเงิน',
+                                    table: 'จำนวนเงิน',
                                   ),
                             ),
                           ),
@@ -376,7 +392,11 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Inventory section
-  Widget _buildInventorySection(List<StockItem> items, String title) {
+  Widget _buildInventorySection(
+    List<StockItem> items,
+    String title,
+    String tableId,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -411,40 +431,58 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 ],
                 rows:
                     items.map((item) {
+                      final index = items.indexOf(item);
                       return DataRow(
                         cells: [
                           DataCell(Text((item as StockInventoryItem).name)),
                           DataCell(
                             NumberInputField(
                               value: item.value,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    column: 'เริ่มต็อก',
-                                  ),
+                              onChanged: (value) {
+                                double newValue = double.tryParse(value) ?? 0.0;
+                                stockTableProvider.updateInventory(
+                                  tableId,
+                                  newValue,
+                                  index,
+                                );
+                                stockTableProvider.updateRemaining(
+                                  tableId,
+                                  newValue,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                           DataCell(
                             NumberInputField(
                               value: item.used,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    column: 'ใช้ไป',
-                                  ),
+                              onChanged: (value) {
+                                double newValue = double.tryParse(value) ?? 0.0;
+                                stockTableProvider.updateInventoryUsed(
+                                  tableId,
+                                  newValue,
+                                  index,
+                                );
+                                stockTableProvider.updateRemaining(
+                                  tableId,
+                                  newValue,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                           DataCell(
-                            NumberInputField(
-                              value: item.remaining,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    column: 'เหลือ',
-                                  ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Consumer<StockTableProvider>(
+                                builder: (context, provider, _) {
+                                  final updatedItem =
+                                      provider.stockData[tableId]![index]
+                                          as StockInventoryItem;
+                                  return Text(updatedItem.remaining ?? '0');
+                                  // }
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -459,7 +497,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Cash summary section
-  Widget _buildCashSummarySection(Map<String, List<StockItem>> stockData) {
+  Widget _buildCashSummarySection() {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -491,7 +529,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   DataColumn(label: Text('จำนวนเงิน')),
                 ],
                 rows:
-                    stockData['cashSummary']!.map((item) {
+                    _stockData['cashSummary']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text((item as StockSummaryItem).name)),
@@ -502,7 +540,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'จำนวนเงิน',
+                                    table: 'จำนวนเงิน',
                                   ),
                             ),
                           ),
@@ -518,7 +556,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   // Cash details section
-  Widget _buildCashDetailsSection(Map<String, List<StockItem>> stockData) {
+  Widget _buildCashDetailsSection() {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -551,7 +589,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   DataColumn(label: Text('ยอดรวม')),
                 ],
                 rows:
-                    stockData['cashDetails']!.map((item) {
+                    _stockData['cashDetails']!.map((item) {
                       return DataRow(
                         cells: [
                           DataCell(Text((item as StockCashRemainItem).name)),
@@ -562,7 +600,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'จำนวน',
+                                    table: 'จำนวน',
                                   ),
                             ),
                           ),
@@ -573,7 +611,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                   (value) => _updateStockItemValue(
                                     item,
                                     value,
-                                    column: 'ยอดรวม',
+                                    table: 'ยอดรวม',
                                   ),
                             ),
                           ),

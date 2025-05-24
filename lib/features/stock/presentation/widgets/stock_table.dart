@@ -13,7 +13,7 @@ class StockTable extends StatelessWidget {
     return Expanded(
       child: DataTable(
         columnSpacing: 30,
-        headingRowColor: MaterialStateColor.resolveWith(
+        headingRowColor: WidgetStateColor.resolveWith(
           (states) => Colors.grey[200]!,
         ),
         columns: const [

@@ -39,9 +39,9 @@ class StockInventoryItem extends StockItem {
         value!.isNotEmpty &&
         used!.isNotEmpty) {
       try {
-        int begin = int.parse(value!);
-        int usedAmount = int.parse(used!);
-        int remain = begin - usedAmount;
+        double begin = double.parse(value!);
+        double usedAmount = double.parse(used!);
+        double remain = begin - usedAmount;
         remaining = remain.toString();
       } catch (e) {
         // Handle parsing errors
