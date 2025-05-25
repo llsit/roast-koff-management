@@ -71,6 +71,7 @@ class StockTableProvider extends ChangeNotifier {
       StockSalesItem(name: 'เงินเชียร์ +15', category: 'top'),
       StockSalesItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
       StockSalesItem(name: 'แก้วฟรี', category: 'top'),
+      StockSalesItem(name: 'รวม', category: 'top'),
     ],
     'cashSummary': [
       StockSummaryItem(name: 'เงินสด', category: 'leftBottom'),
@@ -133,6 +134,51 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
     if (item is StockInventoryItem) {
       item.calculateRemaining();
+      notifyListeners();
+    }
+  }
+
+  void updateSalesUsed(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockSalesItem) {
+      final updatedItem = item.copyWith(used: value.toString());
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateSalesUsedCustomer(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockSalesItem) {
+      final updatedItem = item.copyWith(usedCustomer: value.toString());
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateSummary(String category, double value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockSalesItem) {
+      final updatedItem = item.copyWith(summary: value.toString());
+
+      _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }

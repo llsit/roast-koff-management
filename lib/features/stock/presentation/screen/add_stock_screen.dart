@@ -329,29 +329,34 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 ],
                 rows:
                     _stockData['sales']!.map((item) {
+                      final index = _stockData['sales']!.indexOf(item);
                       return DataRow(
                         cells: [
                           DataCell(Text((item as StockSalesItem).name)),
                           DataCell(
                             NumberInputField(
                               value: item.used,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'แก้ว',
-                                  ),
+                              onChanged: (value) {
+                                double newValue = double.tryParse(value) ?? 0.0;
+                                stockTableProvider.updateSalesUsed(
+                                  'sales',
+                                  newValue,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                           DataCell(
                             NumberInputField(
                               value: item.usedCustomer,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'เยติ',
-                                  ),
+                              onChanged: (value) {
+                                double newValue = double.tryParse(value) ?? 0.0;
+                                stockTableProvider.updateSalesUsedCustomer(
+                                  'sales',
+                                  newValue,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                           DataCell(
