@@ -96,7 +96,7 @@ class StockTableProvider extends ChangeNotifier {
 
   List<StockItem> getTable(String title) => _stockData[title]!;
 
-  void updateInventoryUsed(String category, double value, int index) {
+  void updateInventoryUsed(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
@@ -104,14 +104,14 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
 
     if (item is StockInventoryItem) {
-      final updatedItem = item.copyWith(used: value.toString());
+      final updatedItem = item.copyWith(used: value);
 
       _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }
 
-  void updateInventory(String category, double value, int index) {
+  void updateInventory(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
@@ -119,21 +119,24 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
 
     if (item is StockInventoryItem) {
-      final updatedItem = item.copyWith(value: value.toString());
+      final updatedItem = item.copyWith(value: value);
 
       _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }
 
-  void updateRemaining(String category, double value, int index) {
+  void updateRemaining(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
 
     final item = list[index];
+
     if (item is StockInventoryItem) {
-      item.calculateRemaining();
+      final updatedItem = item.copyWith(remaining: value);
+
+      _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }

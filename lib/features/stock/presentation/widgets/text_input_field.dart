@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class NumberInputField extends StatelessWidget {
+class TextInputField extends StatelessWidget {
   final String? value;
   final Function(String) onChanged;
   final double width;
 
-  const NumberInputField({
+  const TextInputField({
     super.key,
     this.value,
     required this.onChanged,
-    this.width = 80,
+    this.width = 100,
   });
 
   @override
@@ -33,8 +33,7 @@ class NumberInputField extends StatelessWidget {
           ),
         ),
         controller: TextEditingController(text: value),
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        keyboardType: TextInputType.text,
         onChanged: onChanged,
         style: const TextStyle(fontSize: 14),
         textAlign: TextAlign.center,

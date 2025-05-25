@@ -9,7 +9,7 @@ import '../../data/stock_detail_item.dart';
 import '../../data/stock_inventory_item.dart';
 import '../../data/stock_item.dart';
 import '../widgets/custom_data_table.dart';
-import '../widgets/number_input_field.dart';
+import '../widgets/text_input_field.dart';
 
 class AddStockScreen extends StatefulWidget {
   const AddStockScreen({super.key});
@@ -334,7 +334,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         cells: [
                           DataCell(Text((item as StockSalesItem).name)),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.used,
                               onChanged: (value) {
                                 double newValue = double.tryParse(value) ?? 0.0;
@@ -347,7 +347,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.usedCustomer,
                               onChanged: (value) {
                                 double newValue = double.tryParse(value) ?? 0.0;
@@ -360,7 +360,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
@@ -441,53 +441,39 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         cells: [
                           DataCell(Text((item as StockInventoryItem).name)),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.value,
                               onChanged: (value) {
-                                double newValue = double.tryParse(value) ?? 0.0;
                                 stockTableProvider.updateInventory(
                                   tableId,
-                                  newValue,
-                                  index,
-                                );
-                                stockTableProvider.updateRemaining(
-                                  tableId,
-                                  newValue,
+                                  value,
                                   index,
                                 );
                               },
                             ),
                           ),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.used,
                               onChanged: (value) {
-                                double newValue = double.tryParse(value) ?? 0.0;
                                 stockTableProvider.updateInventoryUsed(
                                   tableId,
-                                  newValue,
-                                  index,
-                                );
-                                stockTableProvider.updateRemaining(
-                                  tableId,
-                                  newValue,
+                                  value,
                                   index,
                                 );
                               },
                             ),
                           ),
                           DataCell(
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Consumer<StockTableProvider>(
-                                builder: (context, provider, _) {
-                                  final updatedItem =
-                                      provider.stockData[tableId]![index]
-                                          as StockInventoryItem;
-                                  return Text(updatedItem.remaining ?? '0');
-                                  // }
-                                },
-                              ),
+                            TextInputField(
+                              value: item.remaining,
+                              onChanged: (value) {
+                                stockTableProvider.updateRemaining(
+                                  tableId,
+                                  value,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -539,7 +525,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         cells: [
                           DataCell(Text((item as StockSummaryItem).name)),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
@@ -599,7 +585,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         cells: [
                           DataCell(Text((item as StockCashRemainItem).name)),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.value,
                               onChanged:
                                   (value) => _updateStockItemValue(
@@ -610,7 +596,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             ),
                           ),
                           DataCell(
-                            NumberInputField(
+                            TextInputField(
                               value: item.summary,
                               onChanged:
                                   (value) => _updateStockItemValue(
