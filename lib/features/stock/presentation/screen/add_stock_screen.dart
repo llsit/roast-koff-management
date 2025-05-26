@@ -46,9 +46,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
     super.dispose();
   }
 
-  // Function to update stock item values
-  void _updateStockItemValue(StockItem item, String value, {String? table}) {}
-
   // Show a snackbar message
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -75,6 +72,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Reset stock data
   void _resetStockData() {
+    stockTableProvider.resetData();
     _showMessage('รีเซ็ตข้อมูลเรียบร้อย');
   }
 
@@ -337,10 +335,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.used,
                               onChanged: (value) {
-                                double newValue = double.tryParse(value) ?? 0.0;
                                 stockTableProvider.updateSalesUsed(
                                   'sales',
-                                  newValue,
+                                  value,
                                   index,
                                 );
                               },
@@ -350,10 +347,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.usedCustomer,
                               onChanged: (value) {
-                                double newValue = double.tryParse(value) ?? 0.0;
                                 stockTableProvider.updateSalesUsedCustomer(
                                   'sales',
-                                  newValue,
+                                  value,
                                   index,
                                 );
                               },
@@ -362,12 +358,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           DataCell(
                             TextInputField(
                               value: item.summary,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'จำนวนเงิน',
-                                  ),
+                              onChanged: (value) {
+                                stockTableProvider.updateSummary(
+                                  'sales',
+                                  value,
+                                  index,
+                                );
+                              },
                             ),
                           ),
                           // DataCell(
@@ -527,12 +524,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           DataCell(
                             TextInputField(
                               value: item.summary,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'จำนวนเงิน',
-                                  ),
+                              onChanged: (value) {
+                                stockTableProvider.updateCashSummary(
+                                  'cashSummary',
+                                  value,
+                                  _stockData['cashSummary']!.indexOf(item),
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -587,23 +585,25 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           DataCell(
                             TextInputField(
                               value: item.value,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'จำนวน',
-                                  ),
+                              onChanged: (value) {
+                                stockTableProvider.updateCashRemaining(
+                                  'cashDetails',
+                                  value,
+                                  _stockData['cashDetails']!.indexOf(item),
+                                );
+                              },
                             ),
                           ),
                           DataCell(
                             TextInputField(
                               value: item.summary,
-                              onChanged:
-                                  (value) => _updateStockItemValue(
-                                    item,
-                                    value,
-                                    table: 'ยอดรวม',
-                                  ),
+                              onChanged: (value) {
+                                stockTableProvider.updateCashSummaryRemaining(
+                                  'cashDetails',
+                                  value,
+                                  _stockData['cashDetails']!.indexOf(item),
+                                );
+                              },
                             ),
                           ),
                         ],

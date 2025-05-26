@@ -7,8 +7,10 @@ import '../data/stock_item.dart';
 import '../data/stock_sale_item.dart';
 
 class StockTableProvider extends ChangeNotifier {
+  Map<String, List<StockItem>> _stockData = {};
+
   // Stock data organized by category
-  final Map<String, List<StockItem>> _stockData = {
+  final Map<String, List<StockItem>> _initialStockData = {
     'leftInventory': [
       StockInventoryItem(name: 'แก้วเย็น', category: 'left'),
       StockInventoryItem(name: 'แก้วร้อน', category: 'left'),
@@ -92,9 +94,16 @@ class StockTableProvider extends ChangeNotifier {
     ],
   };
 
-  Map<String, List<StockItem>> get stockData => _stockData;
+  Map<String, List<StockItem>> get stockData => _stockData = _initialStockData;
 
-  List<StockItem> getTable(String title) => _stockData[title]!;
+  StockTableProvider() {
+    resetData();
+  }
+
+  void resetData() {
+    _stockData = _initialStockData;
+    notifyListeners();
+  }
 
   void updateInventoryUsed(String category, String value, int index) {
     final list = _stockData[category];
@@ -141,7 +150,7 @@ class StockTableProvider extends ChangeNotifier {
     }
   }
 
-  void updateSalesUsed(String category, double value, int index) {
+  void updateSalesUsed(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
@@ -149,14 +158,14 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
 
     if (item is StockSalesItem) {
-      final updatedItem = item.copyWith(used: value.toString());
+      final updatedItem = item.copyWith(used: value);
 
       _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }
 
-  void updateSalesUsedCustomer(String category, double value, int index) {
+  void updateSalesUsedCustomer(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
@@ -164,14 +173,14 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
 
     if (item is StockSalesItem) {
-      final updatedItem = item.copyWith(usedCustomer: value.toString());
+      final updatedItem = item.copyWith(usedCustomer: value);
 
       _stockData[category]![index] = updatedItem;
       notifyListeners();
     }
   }
 
-  void updateSummary(String category, double value, int index) {
+  void updateSummary(String category, String value, int index) {
     final list = _stockData[category];
 
     if (list == null || index >= list.length) return;
@@ -179,7 +188,52 @@ class StockTableProvider extends ChangeNotifier {
     final item = list[index];
 
     if (item is StockSalesItem) {
-      final updatedItem = item.copyWith(summary: value.toString());
+      final updatedItem = item.copyWith(summary: value);
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateCashSummary(String category, String value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockSummaryItem) {
+      final updatedItem = item.copyWith(summary: value);
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateCashRemaining(String category, String value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockCashRemainItem) {
+      final updatedItem = item.copyWith(value: value);
+
+      _stockData[category]![index] = updatedItem;
+      notifyListeners();
+    }
+  }
+
+  void updateCashSummaryRemaining(String category, String value, int index) {
+    final list = _stockData[category];
+
+    if (list == null || index >= list.length) return;
+
+    final item = list[index];
+
+    if (item is StockCashRemainItem) {
+      final updatedItem = item.copyWith(summary: value);
 
       _stockData[category]![index] = updatedItem;
       notifyListeners();
