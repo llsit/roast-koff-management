@@ -17,8 +17,6 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print("email: ${email.toString()}");
-      print("password: ${password.toString()}");
       user = await loginUseCase(email, password);
       if (user == null) {
         error = "Login failed";
@@ -26,8 +24,6 @@ class LoginViewModel extends ChangeNotifier {
         isLoginSuccess = true;
       }
     } catch (e) {
-      print("error: ${e.toString()}");
-      debugPrint("error: ${e.toString()}");
       error = e.toString();
     } finally {
       isLoading = false;

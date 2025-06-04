@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roast_koff_management/features/stock/data/stock_sale_item.dart';
-import 'package:roast_koff_management/features/stock/provider/stock_table_provider.dart';
+import 'package:roast_koff_management/features/stock/provider/stock_table_viewmodel.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../data/stock_cash_remain_item.dart';
@@ -21,23 +21,61 @@ class AddStockScreen extends StatefulWidget {
 class _AddStockScreenState extends State<AddStockScreen> {
   final TextEditingController _dateController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  late StockTableProvider stockTableProvider;
+  late StockTableViewModel stockTableViewModel;
   late Map<String, List<StockItem>> _stockData;
+
+  List<TextEditingController> valueInventoryControllers = [];
+  List<TextEditingController> usedInventoryControllers = [];
+  List<TextEditingController> remainingInventoryControllers = [];
 
   @override
   void initState() {
     super.initState();
     // _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+
+  }
+
+  void _initializeInventoryControllers() {
+    final stockProvider = Provider.of<StockTableViewModel>(
+      context,
+      listen: false,
+    );
+    final items = stockProvider.getTable('leftInventory') + stockProvider.getTable('rightInventory');
+
+    valueInventoryControllers =
+        items.map((item) {
+          if (item is StockInventoryItem) {
+            return TextEditingController(text: item.value.toString());
+          }
+          return TextEditingController(text: '0');
+        }).toList();
+
+    usedInventoryControllers =
+        items.map((item) {
+          if (item is StockInventoryItem) {
+            return TextEditingController(text: item.used.toString());
+          }
+          return TextEditingController(text: '0');
+        }).toList();
+
+    remainingInventoryControllers =
+        items.map((item) {
+          if (item is StockInventoryItem) {
+            return TextEditingController(text: item.remaining.toString());
+          }
+          return TextEditingController(text: '0');
+        }).toList();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    stockTableProvider = Provider.of<StockTableProvider>(
+    stockTableViewModel = Provider.of<StockTableViewModel>(
       context,
       listen: false,
     );
-    _stockData = stockTableProvider.stockData;
+    _stockData = stockTableViewModel.stockData;
+    _initializeInventoryControllers();
   }
 
   @override
@@ -72,7 +110,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Reset stock data
   void _resetStockData() {
-    stockTableProvider.resetData();
+    stockTableViewModel.resetData();
     _showMessage('รีเซ็ตข้อมูลเรียบร้อย');
   }
 
@@ -185,7 +223,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
               children: [
                 Expanded(
                   child: _buildInventorySection(
-                    _stockData['leftInventory']!,
+                    context
+                        .watch<StockTableViewModel>()
+                        .stockData['leftInventory']!,
                     'วัตถุดิบ (1)',
                     'leftInventory',
                   ),
@@ -193,7 +233,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildInventorySection(
-                    _stockData['rightInventory']!,
+                    context
+                        .watch<StockTableViewModel>()
+                        .stockData['leftInventory']!,
                     'วัตถุดิบ (2)',
                     'rightInventory',
                   ),
@@ -335,7 +377,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.used,
                               onChanged: (value) {
-                                stockTableProvider.updateSalesUsed(
+                                stockTableViewModel.updateSalesUsed(
                                   'sales',
                                   value,
                                   index,
@@ -347,7 +389,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.usedCustomer,
                               onChanged: (value) {
-                                stockTableProvider.updateSalesUsedCustomer(
+                                stockTableViewModel.updateSalesUsedCustomer(
                                   'sales',
                                   value,
                                   index,
@@ -359,7 +401,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.summary,
                               onChanged: (value) {
-                                stockTableProvider.updateSummary(
+                                stockTableViewModel.updateSummary(
                                   'sales',
                                   value,
                                   index,
@@ -399,88 +441,125 @@ class _AddStockScreenState extends State<AddStockScreen> {
     String title,
     String tableId,
   ) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    void updateControllers(List<StockItem> items) {
+      for (int i = 0; i < items.length; i++) {
+        String valueText = '';
+        String usedText = '';
+        String remainingText = '';
+
+        if (items[i] is StockInventoryItem) {
+          final stockItem = items[i] as StockInventoryItem;
+          valueText = stockItem.value.toString();
+          usedText = stockItem.used.toString();
+          remainingText = stockItem.remaining.toString();
+        }
+
+        if (valueInventoryControllers[i].text != valueText) {
+          valueInventoryControllers[i].text = valueText;
+        }
+        if (usedInventoryControllers[i].text != usedText) {
+          usedInventoryControllers[i].text = usedText;
+        }
+        if (remainingInventoryControllers[i].text != remainingText) {
+          remainingInventoryControllers[i].text = remainingText;
+        }
+      }
+    }
+
+    return Consumer<StockTableViewModel>(
+      builder: (context, stockProvider, child) {
+        final items = stockProvider.getTable(tableId);
+
+        if (valueInventoryControllers.isEmpty &&
+            usedInventoryControllers.isEmpty &&
+            remainingInventoryControllers.isEmpty) {
+          updateControllers;
+        }
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.inventory_2, color: AppColors.primary),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Row(
+                  children: [
+                    const Icon(Icons.inventory_2, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 24),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CustomDataTable(
+                    columns: const [
+                      DataColumn(label: Text('รายการ')),
+                      DataColumn(label: Text('เติมสต๊อก')),
+                      DataColumn(label: Text('ใช้ไป')),
+                      DataColumn(label: Text('เหลือ')),
+                    ],
+                    rows:
+                        items.map((item) {
+                          final index = items.indexOf(item);
+                          return DataRow(
+                            cells: [
+                              DataCell(Text((item as StockInventoryItem).name)),
+                              DataCell(
+                                TextInputField(
+                                  value: item.value,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateInventory(
+                                      tableId,
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                              DataCell(
+                                TextInputField(
+                                  value: item.used,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateInventoryUsed(
+                                      tableId,
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                              DataCell(
+                                TextInputField(
+                                  value: item.remaining,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateRemaining(
+                                      tableId,
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 24),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomDataTable(
-                columns: const [
-                  DataColumn(label: Text('รายการ')),
-                  DataColumn(label: Text('เติมสต๊อก')),
-                  DataColumn(label: Text('ใช้ไป')),
-                  DataColumn(label: Text('เหลือ')),
-                ],
-                rows:
-                    items.map((item) {
-                      final index = items.indexOf(item);
-                      return DataRow(
-                        cells: [
-                          DataCell(Text((item as StockInventoryItem).name)),
-                          DataCell(
-                            TextInputField(
-                              value: item.value,
-                              onChanged: (value) {
-                                stockTableProvider.updateInventory(
-                                  tableId,
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                          DataCell(
-                            TextInputField(
-                              value: item.used,
-                              onChanged: (value) {
-                                stockTableProvider.updateInventoryUsed(
-                                  tableId,
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                          DataCell(
-                            TextInputField(
-                              value: item.remaining,
-                              onChanged: (value) {
-                                stockTableProvider.updateRemaining(
-                                  tableId,
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -525,7 +604,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.summary,
                               onChanged: (value) {
-                                stockTableProvider.updateCashSummary(
+                                stockTableViewModel.updateCashSummary(
                                   'cashSummary',
                                   value,
                                   _stockData['cashSummary']!.indexOf(item),
@@ -586,7 +665,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.value,
                               onChanged: (value) {
-                                stockTableProvider.updateCashRemaining(
+                                stockTableViewModel.updateCashRemaining(
                                   'cashDetails',
                                   value,
                                   _stockData['cashDetails']!.indexOf(item),
@@ -598,7 +677,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                             TextInputField(
                               value: item.summary,
                               onChanged: (value) {
-                                stockTableProvider.updateCashSummaryRemaining(
+                                stockTableViewModel.updateCashSummaryRemaining(
                                   'cashDetails',
                                   value,
                                   _stockData['cashDetails']!.indexOf(item),

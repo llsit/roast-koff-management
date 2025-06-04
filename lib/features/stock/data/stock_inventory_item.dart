@@ -71,4 +71,9 @@ class StockInventoryItem extends StockItem {
       remaining: json['remaining'],
     );
   }
+
+  @override
+  String toString() {
+    return 'StockInventoryItem(name: $name, category: $category, value: $value, used: $used, remaining: $remaining)';
+  }
 }

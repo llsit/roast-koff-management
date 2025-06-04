@@ -14,7 +14,7 @@ import 'features/auth/domain/usecase/login_usecase.dart';
 import 'features/auth/presentation/screen/login_screen.dart';
 import 'features/auth/presentation/screen/login_viewmodel.dart';
 import 'features/home/presentation/screen/menu_provider.dart';
-import 'features/stock/provider/stock_table_provider.dart';
+import 'features/stock/provider/stock_table_viewmodel.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -40,7 +40,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel(loginUseCase)),
         ChangeNotifierProvider(create: (_) => MenuProvider()),
-        ChangeNotifierProvider(create: (_) => StockTableProvider()),
+        ChangeNotifierProvider(create: (_) => StockTableViewModel()),
       ],
       child: const MyApp(),
     ),
