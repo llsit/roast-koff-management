@@ -407,9 +407,47 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Sales section
   Widget _buildSalesSection() {
+    void updateControllers(List<StockItem> items) {
+      for (int i = 0; i < items.length; i++) {
+        String priceText = '';
+        String usedText = '';
+        String usedCustomerText = '';
+        String summaryText = '';
+
+        if (items[i] is StockSalesItem) {
+          final stockItem = items[i] as StockSalesItem;
+          priceText = stockItem.price.toString();
+          usedText = stockItem.used.toString();
+          usedCustomerText = stockItem.usedCustomer.toString();
+          summaryText = stockItem.summary.toString();
+        }
+
+        if (priceSalesControllers[i].text != priceText) {
+          priceSalesControllers[i].text = priceText;
+        }
+        if (usedSalesControllers[i].text != usedText) {
+          usedSalesControllers[i].text = usedText;
+        }
+        if (usedCustomerSalesControllers[i].text != usedCustomerText) {
+          usedCustomerSalesControllers[i].text = usedCustomerText;
+        }
+        if (summarySalesControllers[i].text != summaryText) {
+          summarySalesControllers[i].text = summaryText;
+        }
+      }
+    }
+
     return Consumer<StockTableViewModel>(
       builder: (context, stockProvider, child) {
         final items = stockProvider.getTable('sales');
+
+        if (priceSalesControllers.isEmpty &&
+            usedSalesControllers.isEmpty &&
+            usedCustomerSalesControllers.isEmpty &&
+            summarySalesControllers.isEmpty) {
+          updateControllers;
+        }
+
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           elevation: 2,
