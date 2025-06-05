@@ -35,6 +35,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
   List<TextEditingController> usedCustomerSalesControllers = [];
   List<TextEditingController> summarySalesControllers = [];
 
+  // Cash summary controllers
+  List<TextEditingController> summaryCashControllers = [];
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +118,22 @@ class _AddStockScreenState extends State<AddStockScreen> {
         }).toList();
   }
 
+  void _initializeCashControllers() {
+    final stockProvider = Provider.of<StockTableViewModel>(
+      context,
+      listen: false,
+    );
+    final items = stockProvider.getTable('cashSummary');
+
+    summaryCashControllers =
+        items.map((item) {
+          if (item is StockSummaryItem) {
+            return TextEditingController(text: item.summary.toString());
+          }
+          return TextEditingController(text: '');
+        }).toList();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -125,10 +144,11 @@ class _AddStockScreenState extends State<AddStockScreen> {
     _stockData = stockTableViewModel.stockData;
     _initializeInventoryControllers();
     _initializeSalesControllers();
+    _initializeCashControllers();
   }
 
-  void _disposeControllers(List<TextEditingController> Controllers) {
-    for (var controller in Controllers) {
+  void _disposeControllers(List<TextEditingController> controllers) {
+    for (var controller in controllers) {
       controller.dispose();
     }
   }
@@ -142,6 +162,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
     _disposeControllers(usedSalesControllers);
     _disposeControllers(usedCustomerSalesControllers);
     _disposeControllers(summarySalesControllers);
+    _disposeControllers(summaryCashControllers);
     super.dispose();
   }
 
@@ -633,61 +654,86 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Cash summary section
   Widget _buildCashSummarySection() {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    void updateControllers(List<StockItem> items) {
+      for (int i = 0; i < items.length; i++) {
+        String summaryText = '';
+
+        if (items[i] is StockSummaryItem) {
+          final stockItem = items[i] as StockSummaryItem;
+          summaryText = stockItem.summary.toString();
+        }
+
+        if (summaryCashControllers[i].text != summaryText) {
+          summaryCashControllers[i].text = summaryText;
+        }
+      }
+    }
+
+    return Consumer<StockTableViewModel>(
+      builder: (context, stockProvider, child) {
+        final items = stockProvider.getTable('cashSummary');
+
+        if (summaryCashControllers.isEmpty) {
+          updateControllers;
+        }
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.payments, color: AppColors.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'ยอดเงินรวม',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Row(
+                  children: [
+                    const Icon(Icons.payments, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      'ยอดเงินรวม',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 24),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CustomDataTable(
+                    columns: const [
+                      DataColumn(label: Text('รายการ')),
+                      DataColumn(label: Text('จำนวนเงิน')),
+                    ],
+                    rows:
+                        items.map((item) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text((item as StockSummaryItem).name)),
+                              DataCell(
+                                TextInputField(
+                                  value: item.summary,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateCashSummary(
+                                      'cashSummary',
+                                      value,
+                                      _stockData['cashSummary']!.indexOf(item),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 24),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomDataTable(
-                columns: const [
-                  DataColumn(label: Text('รายการ')),
-                  DataColumn(label: Text('จำนวนเงิน')),
-                ],
-                rows:
-                    _stockData['cashSummary']!.map((item) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text((item as StockSummaryItem).name)),
-                          DataCell(
-                            TextInputField(
-                              value: item.summary,
-                              onChanged: (value) {
-                                stockTableViewModel.updateCashSummary(
-                                  'cashSummary',
-                                  value,
-                                  _stockData['cashSummary']!.indexOf(item),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

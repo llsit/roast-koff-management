@@ -157,13 +157,23 @@ class StockTableViewModel extends ChangeNotifier {
     ];
 
     _stockData['sales'] = [
-    StockSalesItem(name: 'ร้อน', category: 'top'),
-    StockSalesItem(name: 'เย็น', category: 'top'),
-    StockSalesItem(name: 'ปั่น', category: 'top'),
-    StockSalesItem(name: 'เงินเชียร์ +15', category: 'top'),
-    StockSalesItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
-    StockSalesItem(name: 'แก้วฟรี', category: 'top'),
-    StockSalesItem(name: 'รวม', category: 'top'),
+      StockSalesItem(name: 'ร้อน', category: 'top'),
+      StockSalesItem(name: 'เย็น', category: 'top'),
+      StockSalesItem(name: 'ปั่น', category: 'top'),
+      StockSalesItem(name: 'เงินเชียร์ +15', category: 'top'),
+      StockSalesItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
+      StockSalesItem(name: 'แก้วฟรี', category: 'top'),
+      StockSalesItem(name: 'รวม', category: 'top'),
+    ];
+
+    _stockData['cashSummary'] = [
+      StockSummaryItem(name: 'เงินสด', category: 'leftBottom'),
+      StockSummaryItem(name: 'โอน', category: 'leftBottom'),
+      StockSummaryItem(name: 'เงินทอน', category: 'leftBottom'),
+      StockSummaryItem(name: 'ทิป', category: 'leftBottom'),
+      StockSummaryItem(name: 'เกิน', category: 'leftBottom'),
+      StockSummaryItem(name: 'ขาด', category: 'leftBottom'),
+      StockSummaryItem(name: 'รวม', category: 'leftBottom'),
     ];
 
     notifyListeners();
