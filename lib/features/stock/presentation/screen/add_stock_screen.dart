@@ -24,15 +24,21 @@ class _AddStockScreenState extends State<AddStockScreen> {
   late StockTableViewModel stockTableViewModel;
   late Map<String, List<StockItem>> _stockData;
 
+  // Inventory controllers
   List<TextEditingController> valueInventoryControllers = [];
   List<TextEditingController> usedInventoryControllers = [];
   List<TextEditingController> remainingInventoryControllers = [];
+
+  // Sales controllers
+  List<TextEditingController> priceSalesControllers = [];
+  List<TextEditingController> usedSalesControllers = [];
+  List<TextEditingController> usedCustomerSalesControllers = [];
+  List<TextEditingController> summarySalesControllers = [];
 
   @override
   void initState() {
     super.initState();
     // _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
-
   }
 
   void _initializeInventoryControllers() {
@@ -40,14 +46,16 @@ class _AddStockScreenState extends State<AddStockScreen> {
       context,
       listen: false,
     );
-    final items = stockProvider.getTable('leftInventory') + stockProvider.getTable('rightInventory');
+    final items =
+        stockProvider.getTable('leftInventory') +
+        stockProvider.getTable('rightInventory');
 
     valueInventoryControllers =
         items.map((item) {
           if (item is StockInventoryItem) {
             return TextEditingController(text: item.value.toString());
           }
-          return TextEditingController(text: '0');
+          return TextEditingController(text: '');
         }).toList();
 
     usedInventoryControllers =
@@ -55,7 +63,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
           if (item is StockInventoryItem) {
             return TextEditingController(text: item.used.toString());
           }
-          return TextEditingController(text: '0');
+          return TextEditingController(text: '');
         }).toList();
 
     remainingInventoryControllers =
@@ -63,7 +71,47 @@ class _AddStockScreenState extends State<AddStockScreen> {
           if (item is StockInventoryItem) {
             return TextEditingController(text: item.remaining.toString());
           }
-          return TextEditingController(text: '0');
+          return TextEditingController(text: '');
+        }).toList();
+  }
+
+  void _initializeSalesControllers() {
+    final stockProvider = Provider.of<StockTableViewModel>(
+      context,
+      listen: false,
+    );
+    final items = stockProvider.getTable('sales');
+
+    priceSalesControllers =
+        items.map((item) {
+          if (item is StockSalesItem) {
+            return TextEditingController(text: item.price.toString());
+          }
+          return TextEditingController(text: '');
+        }).toList();
+
+    usedSalesControllers =
+        items.map((item) {
+          if (item is StockSalesItem) {
+            return TextEditingController(text: item.used.toString());
+          }
+          return TextEditingController(text: '');
+        }).toList();
+
+    usedCustomerSalesControllers =
+        items.map((item) {
+          if (item is StockSalesItem) {
+            return TextEditingController(text: item.usedCustomer.toString());
+          }
+          return TextEditingController(text: '');
+        }).toList();
+
+    summarySalesControllers =
+        items.map((item) {
+          if (item is StockSalesItem) {
+            return TextEditingController(text: item.summary.toString());
+          }
+          return TextEditingController(text: '');
         }).toList();
   }
 
@@ -76,11 +124,24 @@ class _AddStockScreenState extends State<AddStockScreen> {
     );
     _stockData = stockTableViewModel.stockData;
     _initializeInventoryControllers();
+    _initializeSalesControllers();
+  }
+
+  void _disposeControllers(List<TextEditingController> Controllers) {
+    for (var controller in Controllers) {
+      controller.dispose();
+    }
   }
 
   @override
   void dispose() {
-    // _dateController.dispose();
+    _disposeControllers(valueInventoryControllers);
+    _disposeControllers(usedInventoryControllers);
+    _disposeControllers(remainingInventoryControllers);
+    _disposeControllers(priceSalesControllers);
+    _disposeControllers(usedSalesControllers);
+    _disposeControllers(usedCustomerSalesControllers);
+    _disposeControllers(summarySalesControllers);
     super.dispose();
   }
 
@@ -177,6 +238,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _resetStockData,
         backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         tooltip: 'รีเซ็ตข้อมูล',
         child: const Icon(Icons.refresh),
       ),
@@ -304,6 +366,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 16,
@@ -323,115 +386,120 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   // Sales section
   Widget _buildSalesSection() {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Consumer<StockTableViewModel>(
+      builder: (context, stockProvider, child) {
+        final items = stockProvider.getTable('sales');
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.monetization_on, color: AppColors.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'ยอดขาย',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Row(
+                  children: [
+                    const Icon(Icons.monetization_on, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      'ยอดขาย',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 24),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CustomDataTable(
+                    columns: const [
+                      DataColumn(label: Text('ยอดขาย')),
+                      DataColumn(label: Text('แก้ว')),
+                      DataColumn(label: Text('เยติ')),
+                      DataColumn(
+                        label: Text(
+                          'จำนวนเงิน',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      // DataColumn(label: Text('รายจ่ายอื่นๆ')),
+                      // DataColumn(
+                      //   label: Text(
+                      //     'จำนวนเงิน',
+                      //     style: TextStyle(fontWeight: FontWeight.bold),
+                      //   ),
+                      // ),
+                    ],
+                    rows:
+                        items.map((item) {
+                          final index = _stockData['sales']!.indexOf(item);
+                          return DataRow(
+                            cells: [
+                              DataCell(Text((item as StockSalesItem).name)),
+                              DataCell(
+                                TextInputField(
+                                  value: item.used,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateSalesUsed(
+                                      'sales',
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                              DataCell(
+                                TextInputField(
+                                  value: item.usedCustomer,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateSalesUsedCustomer(
+                                      'sales',
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                              DataCell(
+                                TextInputField(
+                                  value: item.summary,
+                                  onChanged: (value) {
+                                    stockTableViewModel.updateSummary(
+                                      'sales',
+                                      value,
+                                      index,
+                                    );
+                                  },
+                                ),
+                              ),
+                              // DataCell(
+                              //   NumberInputField(
+                              //     value: item.beginStock,
+                              //     onChanged:
+                              //         (value) => _updateStockItemValue(item, value),
+                              //     width: 120,
+                              //   ),
+                              // ),
+                              // DataCell(
+                              //   NumberInputField(
+                              //     value: item.used,
+                              //     onChanged:
+                              //         (value) => _updateStockItemValue(item, value),
+                              //   ),
+                              // ),
+                            ],
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 24),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomDataTable(
-                columns: const [
-                  DataColumn(label: Text('ยอดขาย')),
-                  DataColumn(label: Text('แก้ว')),
-                  DataColumn(label: Text('เยติ')),
-                  DataColumn(
-                    label: Text(
-                      'จำนวนเงิน',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  // DataColumn(label: Text('รายจ่ายอื่นๆ')),
-                  // DataColumn(
-                  //   label: Text(
-                  //     'จำนวนเงิน',
-                  //     style: TextStyle(fontWeight: FontWeight.bold),
-                  //   ),
-                  // ),
-                ],
-                rows:
-                    _stockData['sales']!.map((item) {
-                      final index = _stockData['sales']!.indexOf(item);
-                      return DataRow(
-                        cells: [
-                          DataCell(Text((item as StockSalesItem).name)),
-                          DataCell(
-                            TextInputField(
-                              value: item.used,
-                              onChanged: (value) {
-                                stockTableViewModel.updateSalesUsed(
-                                  'sales',
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                          DataCell(
-                            TextInputField(
-                              value: item.usedCustomer,
-                              onChanged: (value) {
-                                stockTableViewModel.updateSalesUsedCustomer(
-                                  'sales',
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                          DataCell(
-                            TextInputField(
-                              value: item.summary,
-                              onChanged: (value) {
-                                stockTableViewModel.updateSummary(
-                                  'sales',
-                                  value,
-                                  index,
-                                );
-                              },
-                            ),
-                          ),
-                          // DataCell(
-                          //   NumberInputField(
-                          //     value: item.beginStock,
-                          //     onChanged:
-                          //         (value) => _updateStockItemValue(item, value),
-                          //     width: 120,
-                          //   ),
-                          // ),
-                          // DataCell(
-                          //   NumberInputField(
-                          //     value: item.used,
-                          //     onChanged:
-                          //         (value) => _updateStockItemValue(item, value),
-                          //   ),
-                          // ),
-                        ],
-                      );
-                    }).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

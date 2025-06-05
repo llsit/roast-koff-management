@@ -156,6 +156,16 @@ class StockTableViewModel extends ChangeNotifier {
       StockInventoryItem(name: 'คอฟฟีเมทซอง', category: 'right'),
     ];
 
+    _stockData['sales'] = [
+    StockSalesItem(name: 'ร้อน', category: 'top'),
+    StockSalesItem(name: 'เย็น', category: 'top'),
+    StockSalesItem(name: 'ปั่น', category: 'top'),
+    StockSalesItem(name: 'เงินเชียร์ +15', category: 'top'),
+    StockSalesItem(name: 'เงินทอนเชียร์ +5', category: 'top'),
+    StockSalesItem(name: 'แก้วฟรี', category: 'top'),
+    StockSalesItem(name: 'รวม', category: 'top'),
+    ];
+
     notifyListeners();
   }
 
